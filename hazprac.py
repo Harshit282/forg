@@ -106,7 +106,7 @@ class Window(QWidget):
         all_panel_hbox.addLayout(panel1_vbox)
         all_panel_hbox.addLayout(panel2_vbox)
         all_panel_hbox.addLayout(panel3_vbox)
-        # Stretch factor of 1,1,2 leads to 20%, 20%, 60% used space
+        # Stretch factor of 1,1,3 leads to 20%, 20%, 60% used space
         # for panel 1,2,3 respectively
         all_panel_hbox.setStretchFactor(panel1_vbox,1)
         all_panel_hbox.setStretchFactor(panel2_vbox,1)
