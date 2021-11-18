@@ -11,7 +11,6 @@ a = dict()
 def add_list_items(name, path):
     a[name] = path
 
-
 def add_folder_clicked():
     global selected_folders
     folder_name = QDir(QFileDialog.getExistingDirectory())

@@ -88,8 +88,10 @@ class Window(QWidget):
             checkbox = QListWidgetItem()
             checkbox.setFlags(checkbox.flags() | Qt.ItemIsUserCheckable)
             checkbox.setCheckState(Qt.Unchecked)
-            checkbox.setText("New Rule")
-            listbox2.addItem(checkbox)
+            text, ok = QInputDialog.getText(self,'New rule', 'Enter name:')
+            if ok and text:
+                checkbox.setText(text)
+                listbox2.addItem(checkbox)
 
         btn2.clicked.connect(update_rule_list)
         btn3.clicked.connect(buttons.resume_pause_clicked)
