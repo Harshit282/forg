@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import *
-# from PyQt5.QtCore import *
+from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 import buttons
 import os
@@ -53,6 +53,7 @@ class Window(QWidget):
 
         listbox2 = QListWidget()
         panel2_vbox.addWidget(listbox2)
+        listbox2.setLayout(chk_vbox)
 
         # Panel 3 starts from here...
 
@@ -84,8 +85,11 @@ class Window(QWidget):
         btn1.clicked.connect(update_folder_list)
 
         def update_rule_list():
-            checkbox = QCheckBox('new rule')
-            chk_vbox.addWidget(checkbox)
+            checkbox = QListWidgetItem()
+            checkbox.setFlags(checkbox.flags() | Qt.ItemIsUserCheckable)
+            checkbox.setCheckState(Qt.Unchecked)
+            checkbox.setText("New Rule")
+            listbox2.addItem(checkbox)
 
         btn2.clicked.connect(update_rule_list)
         btn3.clicked.connect(buttons.resume_pause_clicked)
