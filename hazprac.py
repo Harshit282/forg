@@ -134,6 +134,7 @@ class Window(QWidget):
         btm_hbox.addStretch()
         btm_hbox.addWidget(save_btn)
         btm_hbox.addWidget(discard_btn)
+        panel3_vbox.addLayout(btm_hbox)
 
         # Buttons/Icons clicked actions are defined here...
         # They have been imported from buttons python file...
@@ -177,6 +178,6 @@ class Window(QWidget):
         all_panel_hbox.setStretchFactor(panel2_vbox, 1)
         all_panel_hbox.setStretchFactor(panel3_vbox, 3)
         main_window_vbox.addLayout(all_panel_hbox)
-        main_window_vbox.addLayout(btm_hbox)
+        # main_window_vbox.addLayout(btm_hbox)
 
         self.setLayout(main_window_vbox)
