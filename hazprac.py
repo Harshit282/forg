@@ -22,7 +22,6 @@ class Window(QWidget):
         btm_hbox = QHBoxLayout()
         panel3_hbox = QHBoxLayout()
         panel3_grid = QGridLayout()
-        panel3_grid1 = QGridLayout()
 
         btn1 = QPushButton()
         btn2 = QPushButton()
@@ -94,13 +93,12 @@ class Window(QWidget):
         # here int values are as row, column, row_span, column_span....
         # Same for the next grid layout...
 
-        panel3_grid.addWidget(panel3_label_rule1, 0, 0, 0, 3)
+        panel3_grid.addWidget(panel3_label_rule1, 0, 0, 1, 3)
         panel3_grid.addWidget(condition_remove_button, 1, 3)
         panel3_grid.addWidget(condition_add_button, 1, 4)
         panel3_grid.addWidget(combobox, 1, 0)
         panel3_grid.addWidget(combobox1, 1, 1)
         panel3_grid.addWidget(combobox2, 1, 2)
-        panel3_vbox.addLayout(panel3_grid)
 
         panel3_label_rule2 = QLabel('Do the following to the specific folder/files: ')
         rule_add_button = QPushButton()
@@ -119,13 +117,13 @@ class Window(QWidget):
         combobox5.addItem('Date Added')
         combobox5.addItem('nafwn')
         combobox5.addItem('ad')
-        panel3_grid1.addWidget(panel3_label_rule2, 0, 0, 0, 3)
-        panel3_grid1.addWidget(rule_remove_button, 1, 3)
-        panel3_grid1.addWidget(rule_add_button, 1, 4)
-        panel3_grid1.addWidget(combobox3, 1, 0)
-        panel3_grid1.addWidget(combobox4, 1, 1)
-        panel3_grid1.addWidget(combobox5, 1, 2)
-        panel3_vbox.addLayout(panel3_grid1)
+        panel3_grid.addWidget(panel3_label_rule2, 3, 0, 1, 3)
+        panel3_grid.addWidget(rule_remove_button, 4, 3)
+        panel3_grid.addWidget(rule_add_button, 4, 4)
+        panel3_grid.addWidget(combobox3, 4, 0)
+        panel3_grid.addWidget(combobox4, 4, 1)
+        panel3_grid.addWidget(combobox5, 4, 2)
+        panel3_vbox.addLayout(panel3_grid)
 
         # bottom buttons...
 
