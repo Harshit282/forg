@@ -22,6 +22,8 @@ class Window(QWidget):
         btm_hbox = QHBoxLayout()
         panel3_hbox = QHBoxLayout()
         panel3_grid = QGridLayout()
+        model = QStandardItemModel()
+        model1 = QStandardItemModel()
 
         btn1 = QPushButton()
         btn2 = QPushButton()
@@ -78,18 +80,32 @@ class Window(QWidget):
         condition_remove_button = QPushButton()
         condition_remove_button.setIcon(QIcon("icons/remove icon.png"))
         combobox = QComboBox()
-        combobox.addItem('Date Added')
-        combobox.addItem('nafwn')
-        combobox.addItem('ad')
+        combobox.setModel(model)
+        # combobox1 = QComboBox()
+        # combobox1.addItem('is')
+        # combobox1.addItem('was')
         combobox1 = QComboBox()
-        combobox1.addItem('Date Added')
-        combobox1.addItem('nafwn')
-        combobox1.addItem('ad')
-        combobox2 = QComboBox()
-        combobox2.addItem('Date Added')
-        combobox2.addItem('nafwn')
-        combobox2.addItem('ad')
+        combobox1.setModel(model)
+        condition_combobox_data = {
+            'Size': ['<1MB', '<5MB', '<10MB', '<50MB', '<100MB', '<512MB', '<1GB', '<3GB', '>3GB', 'all'],
+            'Image Extension': ['.jpg', '.png', '.gif', 'all'],
+            'Video Extension': ['.mp4', '.mkv', '.m4p', '.m4v', 'all'],
+            'Audio Extension': ['mp3', 'mp4a', 'gig', 'all']
+        }
+        for condition_combobox_key, condition_combobox_value in condition_combobox_data.items():
+            combobox_item = QStandardItem(condition_combobox_key)
+            model.appendRow(combobox_item)
+            for value in condition_combobox_value:
+                combobox1_item = QStandardItem(value)
+                combobox_item.appendRow(combobox1_item)
 
+        def update_combobox1(index):
+            indx = model.index(index, 0, combobox.rootModelIndex())
+            combobox1.setRootModelIndex(indx)
+            combobox1.setCurrentIndex(0)
+
+        combobox.currentIndexChanged.connect(update_combobox1)
+        update_combobox1(0)
         # here int values are as row, column, row_span, column_span....
         # Same for the next grid layout...
 
@@ -97,32 +113,51 @@ class Window(QWidget):
         panel3_grid.addWidget(condition_remove_button, 1, 3)
         panel3_grid.addWidget(condition_add_button, 1, 4)
         panel3_grid.addWidget(combobox, 1, 0)
+        # panel3_grid.addWidget(combobox1, 1, 1)
         panel3_grid.addWidget(combobox1, 1, 1)
-        panel3_grid.addWidget(combobox2, 1, 2)
 
-        panel3_label_rule2 = QLabel('Do the following to the specific folder/files: ')
+        panel3_label_rule2 = QLabel('Do the following to the selected folder/files: ')
         rule_add_button = QPushButton()
         rule_add_button.setIcon(QIcon("icons/add icon.png"))
         rule_remove_button = QPushButton()
         rule_remove_button.setIcon(QIcon("icons/remove icon.png"))
+        combobox2 = QComboBox()
+        combobox2.setModel(model1)
+        # combobox4 = QComboBox()
+        # combobox4.addItem('Date Added')
+        # combobox4.addItem('nafwn')
+        # combobox4.addItem('ad')
         combobox3 = QComboBox()
-        combobox3.addItem('Date Addedrhs')
-        combobox3.addItem('nafwnsdvsdsvd')
-        combobox3.addItem('ad')
-        combobox4 = QComboBox()
-        combobox4.addItem('Date Added')
-        combobox4.addItem('nafwn')
-        combobox4.addItem('ad')
-        combobox5 = QComboBox()
-        combobox5.addItem('Date Added')
-        combobox5.addItem('nafwn')
-        combobox5.addItem('ad')
-        panel3_grid.addWidget(panel3_label_rule2, 3, 0, 1, 3)
+        combobox3.setModel(model1)
+        panel3_grid.addWidget(panel3_label_rule2, 2, 0, 1, 3)
         panel3_grid.addWidget(rule_remove_button, 4, 3)
         panel3_grid.addWidget(rule_add_button, 4, 4)
-        panel3_grid.addWidget(combobox3, 4, 0)
-        panel3_grid.addWidget(combobox4, 4, 1)
-        panel3_grid.addWidget(combobox5, 4, 2)
+        panel3_grid.addWidget(combobox2, 4, 0)
+        # panel3_grid.addWidget(combobox4, 4, 1)
+        panel3_grid.addWidget(combobox3, 4, 1)
+        # this dictionary will hold the data for rule combo-boxes...
+        # SO CHANGE ACCORDINGLY...
+        rule_combobox_data = {
+            'Size ags': ['<1MB', '<5MB', '<10MB', '<50MB', '<100MB', '<512MB', '<1GB', '<3GB', '>3GB', 'all'],
+            'Image Extension gz': ['.jpg', '.png', '.gif', 'all'],
+            'Video Extension gs': ['.mp4', '.mkv', '.m4p', '.m4v', 'all'],
+            'Audio Extension age': ['mp3', 'mp4a', 'gig', 'all']
+        }
+        for rule_combobox_key, rule_combobox_value in rule_combobox_data.items():
+            combobox2_item = QStandardItem(rule_combobox_key)
+            model1.appendRow(combobox2_item)
+            for values in rule_combobox_value:
+                combobox3_item = QStandardItem(values)
+                combobox2_item.appendRow(combobox3_item)
+
+        def update_combobox2(index1):
+            indx1 = model1.index(index1, 0, combobox2.rootModelIndex())
+            combobox3.setRootModelIndex(indx1)
+            combobox3.setCurrentIndex(0)
+
+        combobox2.currentIndexChanged.connect(update_combobox2)
+        update_combobox2(0)
+
         panel3_vbox.addLayout(panel3_grid)
 
         # bottom buttons...
@@ -151,6 +186,13 @@ class Window(QWidget):
                 checkbox.setText(text)
                 listbox2.addItem(checkbox)
 
+            def rule_item_clicked():
+                # # i = listbox2.selectedIndexes()
+                # line_edit.setText(checkbox.text.index(0))
+                pass
+
+            listbox2.itemClicked.connect(rule_item_clicked)
+
         btn2.clicked.connect(update_rule_list)
         btn3.clicked.connect(buttons.resume_pause_clicked)
         save_btn.clicked.connect(buttons.save_button_clicked)
@@ -176,6 +218,5 @@ class Window(QWidget):
         all_panel_hbox.setStretchFactor(panel2_vbox, 1)
         all_panel_hbox.setStretchFactor(panel3_vbox, 3)
         main_window_vbox.addLayout(all_panel_hbox)
-        # main_window_vbox.addLayout(btm_hbox)
 
         self.setLayout(main_window_vbox)
