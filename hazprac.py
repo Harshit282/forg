@@ -90,7 +90,10 @@ class Window(QWidget):
             'Size': ['<1MB', '<5MB', '<10MB', '<50MB', '<100MB', '<512MB', '<1GB', '<3GB', '>3GB', 'all'],
             'Image Extension': ['.jpg', '.png', '.gif', 'all'],
             'Video Extension': ['.mp4', '.mkv', '.m4p', '.m4v', 'all'],
-            'Audio Extension': ['mp3', 'mp4a', 'gig', 'all']
+            'Audio Extension': ['mp3', 'mp4a', 'gig', 'all'],
+            'Empty Files': ['0 bytes'],
+            'Old Files': ['<1 Month', '<3 Months', '<6 Months', '<1 Year', '>1 Year'],
+            'Date Added': []
         }
         for condition_combobox_key, condition_combobox_value in condition_combobox_data.items():
             combobox_item = QStandardItem(condition_combobox_key)
@@ -138,10 +141,11 @@ class Window(QWidget):
         # this dictionary will hold the data for rule combo-boxes...
         # SO CHANGE ACCORDINGLY...
         rule_combobox_data = {
-            'Size ags': ['<1MB', '<5MB', '<10MB', '<50MB', '<100MB', '<512MB', '<1GB', '<3GB', '>3GB', 'all'],
-            'Image Extension gz': ['.jpg', '.png', '.gif', 'all'],
-            'Video Extension gs': ['.mp4', '.mkv', '.m4p', '.m4v', 'all'],
-            'Audio Extension age': ['mp3', 'mp4a', 'gig', 'all']
+            'Copy': [],
+            'Move': [],
+            'Delete': [],
+            'Rename': [],
+            'Trash Bin': []
         }
         for rule_combobox_key, rule_combobox_value in rule_combobox_data.items():
             combobox2_item = QStandardItem(rule_combobox_key)
