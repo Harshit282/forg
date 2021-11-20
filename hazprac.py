@@ -81,19 +81,22 @@ class Window(QWidget):
         condition_remove_button.setIcon(QIcon("icons/remove icon.png"))
         combobox = QComboBox()
         combobox.setModel(model)
-        # combobox1 = QComboBox()
-        # combobox1.addItem('is')
-        # combobox1.addItem('was')
         combobox1 = QComboBox()
         combobox1.setModel(model)
+
+        # Display Calender Here....
+
+        cal_btn = QPushButton("Select Date")
+        cal_btn.setHidden(True)
+
         condition_combobox_data = {
-            'Size': ['<1MB', '<5MB', '<10MB', '<50MB', '<100MB', '<512MB', '<1GB', '<3GB', '>3GB', 'all'],
-            'Image Extension': ['.jpg', '.png', '.gif', 'all'],
-            'Video Extension': ['.mp4', '.mkv', '.m4p', '.m4v', 'all'],
-            'Audio Extension': ['mp3', 'mp4a', 'gig', 'all'],
-            'Empty Files': ['0 bytes'],
-            'Old Files': ['<1 Month', '<3 Months', '<6 Months', '<1 Year', '>1 Year'],
-            'Date Added': []
+            'Size': ['Default', '<1MB', '<5MB', '<10MB', '<50MB', '<100MB', '<512MB', '<1GB', '<3GB', '>3GB'],
+            'Image Extension': ['Default', '.jpg', '.png', '.gif'],
+            'Video Extension': ['Default', '.mp4', '.mkv', '.m4p', '.m4v'],
+            'Audio Extension': ['Default', '.mp3', '.mp4a', '.gig'],
+            'Empty Files': ['Default', '0 bytes'],
+            'Old Files': ['Default', '<1 Month', '<3 Months', '<6 Months', '<1 Year', '>1 Year'],
+            'Date Added': ['is', 'is before', 'is after']
         }
         for condition_combobox_key, condition_combobox_value in condition_combobox_data.items():
             combobox_item = QStandardItem(condition_combobox_key)
@@ -109,15 +112,23 @@ class Window(QWidget):
 
         combobox.currentIndexChanged.connect(update_combobox1)
         update_combobox1(0)
+
+        def onActivated():
+            if combobox.currentText() == 'Date Added':
+                cal_btn.setHidden(False)
+            else:
+                cal_btn.setHidden(True)
+
+        combobox.activated.connect(onActivated)
         # here int values are as row, column, row_span, column_span....
         # Same for the next grid layout...
 
         panel3_grid.addWidget(panel3_label_rule1, 0, 0, 1, 3)
+        panel3_grid.addWidget(combobox, 1, 0)
+        panel3_grid.addWidget(combobox1, 1, 1)
+        panel3_grid.addWidget(cal_btn, 1, 2)
         panel3_grid.addWidget(condition_remove_button, 1, 3)
         panel3_grid.addWidget(condition_add_button, 1, 4)
-        panel3_grid.addWidget(combobox, 1, 0)
-        # panel3_grid.addWidget(combobox1, 1, 1)
-        panel3_grid.addWidget(combobox1, 1, 1)
 
         panel3_label_rule2 = QLabel('Do the following to the selected folder/files: ')
         rule_add_button = QPushButton()
@@ -126,18 +137,16 @@ class Window(QWidget):
         rule_remove_button.setIcon(QIcon("icons/remove icon.png"))
         combobox2 = QComboBox()
         combobox2.setModel(model1)
-        # combobox4 = QComboBox()
-        # combobox4.addItem('Date Added')
-        # combobox4.addItem('nafwn')
-        # combobox4.addItem('ad')
         combobox3 = QComboBox()
         combobox3.setModel(model1)
+        line_edit2 = QLineEdit()
+        line_edit2.setHidden(True)
         panel3_grid.addWidget(panel3_label_rule2, 2, 0, 1, 3)
+        panel3_grid.addWidget(combobox2, 4, 0)
+        panel3_grid.addWidget(combobox3, 4, 1)
+        panel3_grid.addWidget(line_edit2, 4, 2)
         panel3_grid.addWidget(rule_remove_button, 4, 3)
         panel3_grid.addWidget(rule_add_button, 4, 4)
-        panel3_grid.addWidget(combobox2, 4, 0)
-        # panel3_grid.addWidget(combobox4, 4, 1)
-        panel3_grid.addWidget(combobox3, 4, 1)
         # this dictionary will hold the data for rule combo-boxes...
         # SO CHANGE ACCORDINGLY...
         rule_combobox_data = {
@@ -161,6 +170,14 @@ class Window(QWidget):
 
         combobox2.currentIndexChanged.connect(update_combobox2)
         update_combobox2(0)
+
+        def on_Activated():
+            if combobox2.currentText() == 'Rename':
+                line_edit2.setHidden(False)
+            else:
+                line_edit2.setHidden(True)
+
+        combobox2.activated.connect(on_Activated)
 
         panel3_vbox.addLayout(panel3_grid)
 
