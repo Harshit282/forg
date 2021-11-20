@@ -186,12 +186,17 @@ class Window(QWidget):
                 checkbox.setText(text)
                 listbox2.addItem(checkbox)
 
-            def rule_item_clicked():
-                i = listbox2.selectedItems()[0]
-                line_edit.setText(i.text())
-                pass
+        def rule_item_clicked():
+            i = listbox2.selectedItems()[0]
+            line_edit.setText(i.text())
 
-            listbox2.itemClicked.connect(rule_item_clicked)
+        listbox2.itemClicked.connect(rule_item_clicked)
+
+        def update_rule_name():
+            i = listbox2.selectedItems()[0]
+            i.setText(line_edit.text())
+
+        line_edit.editingFinished.connect(update_rule_name)
 
         btn2.clicked.connect(update_rule_list)
         btn3.clicked.connect(buttons.resume_pause_clicked)
