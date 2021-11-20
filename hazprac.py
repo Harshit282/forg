@@ -86,8 +86,9 @@ class Window(QWidget):
 
         # Display Calender Here....
 
-        cal_btn = QPushButton("Select Date")
-        cal_btn.setHidden(True)
+        dateEdit = QDateEdit(calendarPopup=True)
+        dateEdit.setDateTime(QDateTime.currentDateTime())
+        dateEdit.setHidden(True)
 
         condition_combobox_data = {
             'Size': ['Default', '<1MB', '<5MB', '<10MB', '<50MB', '<100MB', '<512MB', '<1GB', '<3GB', '>3GB'],
@@ -115,9 +116,9 @@ class Window(QWidget):
 
         def onActivated():
             if combobox.currentText() == 'Date Added':
-                cal_btn.setHidden(False)
+                dateEdit.setHidden(False)
             else:
-                cal_btn.setHidden(True)
+                dateEdit.setHidden(True)
 
         combobox.activated.connect(onActivated)
         # here int values are as row, column, row_span, column_span....
@@ -126,7 +127,7 @@ class Window(QWidget):
         panel3_grid.addWidget(panel3_label_rule1, 0, 0, 1, 3)
         panel3_grid.addWidget(combobox, 1, 0)
         panel3_grid.addWidget(combobox1, 1, 1)
-        panel3_grid.addWidget(cal_btn, 1, 2)
+        panel3_grid.addWidget(dateEdit, 1, 2)
         panel3_grid.addWidget(condition_remove_button, 1, 3)
         panel3_grid.addWidget(condition_add_button, 1, 4)
 
