@@ -187,8 +187,8 @@ class Window(QWidget):
                 listbox2.addItem(checkbox)
 
             def rule_item_clicked():
-                # # i = listbox2.selectedIndexes()
-                # line_edit.setText(checkbox.text.index(0))
+                i = listbox2.selectedItems()[0]
+                line_edit.setText(i.text())
                 pass
 
             listbox2.itemClicked.connect(rule_item_clicked)
