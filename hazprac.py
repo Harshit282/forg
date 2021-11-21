@@ -157,6 +157,9 @@ class Window(QWidget):
         panel3_grid.addWidget(line_edit2, 4, 2)
         panel3_grid.addWidget(rule_remove_button, 4, 3)
         panel3_grid.addWidget(rule_add_button, 4, 4)
+        print(panel3_grid.setVerticalSpacing(10))
+        # Prevent rows from streching to take all available space
+        panel3_grid.setRowStretch(panel3_grid.rowCount(), 1)
 
         def on_Activated():
             if combobox2.currentText() == 'Rename':
