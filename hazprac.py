@@ -106,8 +106,8 @@ class Window(QWidget):
                 combobox_item.appendRow(combobox1_item)
 
         def update_combobox1(index):
-            indx = model.index(index, 0, combobox.rootModelIndex())
-            combobox1.setRootModelIndex(indx)
+            index_value = model.index(index, 0, combobox.rootModelIndex())
+            combobox1.setRootModelIndex(index_value)
             combobox1.setCurrentIndex(0)
 
         combobox.currentIndexChanged.connect(update_combobox1)
@@ -164,8 +164,8 @@ class Window(QWidget):
                 combobox2_item.appendRow(combobox3_item)
 
         def update_combobox2(index1):
-            indx1 = model1.index(index1, 0, combobox2.rootModelIndex())
-            combobox3.setRootModelIndex(indx1)
+            index_value1 = model1.index(index1, 0, combobox2.rootModelIndex())
+            combobox3.setRootModelIndex(index_value1)
             combobox3.setCurrentIndex(0)
 
         combobox2.currentIndexChanged.connect(update_combobox2)
