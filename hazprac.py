@@ -23,7 +23,6 @@ class Window(QWidget):
         panel3_hbox = QHBoxLayout()
         panel3_grid = QGridLayout()
         model = QStandardItemModel()
-        model1 = QStandardItemModel()
 
         btn1 = QPushButton()
         btn2 = QPushButton()
@@ -86,17 +85,17 @@ class Window(QWidget):
 
         # Display Calender Here....
 
-        dateEdit = QDateEdit(calendarPopup=True)
-        dateEdit.setDateTime(QDateTime.currentDateTime())
-        dateEdit.setHidden(True)
+        date_edit = QDateEdit(calendarPopup=True)
+        date_edit.setDateTime(QDateTime.currentDateTime())
+        date_edit.setHidden(True)
 
         condition_combobox_data = {
-            'Size': ['Default', '<1MB', '<5MB', '<10MB', '<50MB', '<100MB', '<512MB', '<1GB', '<3GB', '>3GB'],
+            'Size': ['<1MB', '<5MB', '<10MB', '<50MB', '<100MB', '<512MB', '<1GB', '<3GB', '>3GB'],
             'Image Extension': ['Default', '.jpg', '.png', '.gif'],
             'Video Extension': ['Default', '.mp4', '.mkv', '.m4p', '.m4v'],
             'Audio Extension': ['Default', '.mp3', '.mp4a', '.gig'],
-            'Empty Files': ['Default', '0 bytes'],
-            'Old Files': ['Default', '<1 Month', '<3 Months', '<6 Months', '<1 Year', '>1 Year'],
+            'Empty Files': ['0 bytes'],
+            'Old Files': ['<1 Month', '<3 Months', '<6 Months', '<1 Year', '>1 Year'],
             'Date Added': ['is', 'is before', 'is after']
         }
         for condition_combobox_key, condition_combobox_value in condition_combobox_data.items():
@@ -116,9 +115,9 @@ class Window(QWidget):
 
         def onActivated():
             if combobox.currentText() == 'Date Added':
-                dateEdit.setHidden(False)
+                date_edit.setHidden(False)
             else:
-                dateEdit.setHidden(True)
+                date_edit.setHidden(True)
 
         combobox.activated.connect(onActivated)
         # here int values are as row, column, row_span, column_span....
@@ -127,7 +126,7 @@ class Window(QWidget):
         panel3_grid.addWidget(panel3_label_rule1, 0, 0, 1, 3)
         panel3_grid.addWidget(combobox, 1, 0)
         panel3_grid.addWidget(combobox1, 1, 1)
-        panel3_grid.addWidget(dateEdit, 1, 2)
+        panel3_grid.addWidget(date_edit, 1, 2)
         panel3_grid.addWidget(condition_remove_button, 1, 3)
         panel3_grid.addWidget(condition_add_button, 1, 4)
 
@@ -137,40 +136,27 @@ class Window(QWidget):
         rule_remove_button = QPushButton()
         rule_remove_button.setIcon(QIcon("icons/remove icon.png"))
         combobox2 = QComboBox()
-        combobox2.setModel(model1)
-        combobox3 = QComboBox()
-        combobox3.setModel(model1)
+        combobox2.addItem('Copy')
+        combobox2.addItem('Move')
+        combobox2.addItem('Delete')
+        combobox2.addItem('Trash Bin')
+        combobox2.addItem('Rename')
+        select_folder_btn = QPushButton("Select Folder")
+
+        def select_folder_clicked():
+            selected_path = QFileDialog.getExistingDirectory()
+            select_folder_btn.setText("to " + QDir(selected_path).dirName())
+
+        select_folder_btn.clicked.connect(select_folder_clicked)
+
         line_edit2 = QLineEdit()
         line_edit2.setHidden(True)
         panel3_grid.addWidget(panel3_label_rule2, 2, 0, 1, 3)
         panel3_grid.addWidget(combobox2, 4, 0)
-        panel3_grid.addWidget(combobox3, 4, 1)
+        panel3_grid.addWidget(select_folder_btn, 4, 1)
         panel3_grid.addWidget(line_edit2, 4, 2)
         panel3_grid.addWidget(rule_remove_button, 4, 3)
         panel3_grid.addWidget(rule_add_button, 4, 4)
-        # this dictionary will hold the data for rule combo-boxes...
-        # SO CHANGE ACCORDINGLY...
-        rule_combobox_data = {
-            'Copy': [],
-            'Move': [],
-            'Delete': [],
-            'Rename': [],
-            'Trash Bin': []
-        }
-        for rule_combobox_key, rule_combobox_value in rule_combobox_data.items():
-            combobox2_item = QStandardItem(rule_combobox_key)
-            model1.appendRow(combobox2_item)
-            for values in rule_combobox_value:
-                combobox3_item = QStandardItem(values)
-                combobox2_item.appendRow(combobox3_item)
-
-        def update_combobox2(index1):
-            index_value1 = model1.index(index1, 0, combobox2.rootModelIndex())
-            combobox3.setRootModelIndex(index_value1)
-            combobox3.setCurrentIndex(0)
-
-        combobox2.currentIndexChanged.connect(update_combobox2)
-        update_combobox2(0)
 
         def on_Activated():
             if combobox2.currentText() == 'Rename':
