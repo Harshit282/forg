@@ -92,7 +92,7 @@ class Window(QWidget):
         date_edit.setHidden(True)
 
         condition_combobox_data = {
-            'Size': ['<1MB', '<5MB', '<10MB', '<50MB', '<100MB', '<512MB', '<1GB', '<3GB', '>3GB'],
+            'Size less than(MB)': ['1', '5', '10'],
             'Image Extension': ['Default', '.jpg', '.png', '.gif'],
             'Video Extension': ['Default', '.mp4', '.mkv', '.m4p', '.m4v'],
             'Audio Extension': ['Default', '.mp3', '.mp4a', '.gig'],
@@ -121,8 +121,14 @@ class Window(QWidget):
                 date_edit.setHidden(False)
             else:
                 date_edit.setHidden(True)
+        def check_for_size():
+            conditions.combobox_value = combobox.currentText()
+            if combobox.currentText() == 'Size':
+                conditions.combobox1_value = combobox1.currentText()
+
 
         combobox.activated.connect(onActivated)
+        combobox.activated.connect(check_for_size)
 
         def combobox1_onActivated():
             conditions.combobox1_value = combobox1.currentText()
@@ -155,6 +161,7 @@ class Window(QWidget):
             selected_path = QFileDialog.getExistingDirectory()
             select_folder_btn.setText("to " + QDir(selected_path).dirName())
             Rules.target_path = selected_path
+            conditions.selected_folder_value = selected_path
 
         select_folder_btn.clicked.connect(select_folder_clicked)
 
@@ -231,10 +238,7 @@ class Window(QWidget):
 
         def selectionChanged(item):
             root_dir = buttons.a.get(item.text())
-            for subdir, dirs, files in os.walk(root_dir):
-                for file in files:
-                    print(os.path.join(subdir, file), "Size of file is: ", os.path.getsize(os.path.join(subdir, file)),
-                          "Bytes")
+            conditions.get_fileinfo(root_dir)
 
         listbox1.itemClicked.connect(selectionChanged)
 

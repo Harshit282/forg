@@ -3,6 +3,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 import os
 import Rules
+import conditions
 
 selected_folders = ''
 
@@ -23,7 +24,7 @@ def add_folder_clicked():
 
 
 def resume_pause_clicked():
-    print("Hello u added me")
+    conditions.filter_size()
 
 
 def save_button_clicked():
