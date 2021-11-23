@@ -1,2 +1,5 @@
-import Rules
-import hazprac
+combobox_value = ''
+combobox_value1 = ''
+combobox_value2 = ''
+date_widget_value = ''
+line_edit_value = ''

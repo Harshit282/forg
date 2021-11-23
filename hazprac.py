@@ -3,6 +3,8 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 import buttons
 import os
+import Rules
+import conditions
 
 
 class Window(QWidget):
@@ -146,6 +148,7 @@ class Window(QWidget):
         def select_folder_clicked():
             selected_path = QFileDialog.getExistingDirectory()
             select_folder_btn.setText("to " + QDir(selected_path).dirName())
+            Rules.original_path = selected_path
 
         select_folder_btn.clicked.connect(select_folder_clicked)
 
@@ -157,15 +160,20 @@ class Window(QWidget):
         panel3_grid.addWidget(line_edit2, 4, 2)
         panel3_grid.addWidget(rule_remove_button, 4, 3)
         panel3_grid.addWidget(rule_add_button, 4, 4)
-        print(panel3_grid.setVerticalSpacing(10))
-        # Prevent rows from streching to take all available space
+        panel3_grid.setVerticalSpacing(20)
+        # Prevent rows from stretching to take all available space
         panel3_grid.setRowStretch(panel3_grid.rowCount(), 1)
 
         def on_Activated():
             if combobox2.currentText() == 'Rename':
                 line_edit2.setHidden(False)
+                select_folder_btn.setHidden(True)
             else:
                 line_edit2.setHidden(True)
+                if combobox2.currentText() == 'Copy' or 'Move':
+                    select_folder_btn.setHidden(False)
+                elif combobox2.currentText() == 'Delete' or 'Trash Bin':
+                    select_folder_btn.setHidden(True)
 
         combobox2.activated.connect(on_Activated)
 

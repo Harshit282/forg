@@ -4,7 +4,6 @@ from send2trash import send2trash
 
 original_path = r''
 target_path = r''
-path = r''
 
 
 def move():
@@ -16,16 +15,16 @@ def copy():
 
 
 def delete():
-    shutil.rmtree(path)  # Enter Path of file to be deleted permanently here...
+    shutil.rmtree(original_path)  # Enter Path of file to be deleted permanently here...
 
 
 def trash_bin():
     # deleting the file
-    send2trash(path)  # pass file path name here...
+    send2trash(original_path)  # pass file path name here...
 
 
 def rename():
-    os.chdir(path)  # path here...
+    os.chdir(original_path)  # path here...
 
     for count, f in enumerate(os.listdir()):
         f_name, f_ext = os.path.splitext(f)

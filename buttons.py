@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 import os
+import Rules
 
 selected_folders = ''
 
@@ -14,8 +15,10 @@ def add_list_items(name, path):
 
 def add_folder_clicked():
     global selected_folders
-    folder_name = QDir(QFileDialog.getExistingDirectory())
+    folder_path = QFileDialog.getExistingDirectory()
+    folder_name = QDir(folder_path)
     selected_folders = folder_name.dirName()
+    Rules.target_path = folder_path
     add_list_items(selected_folders, folder_name.path())
 
 
