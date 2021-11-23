@@ -154,7 +154,7 @@ class Window(QWidget):
         def select_folder_clicked():
             selected_path = QFileDialog.getExistingDirectory()
             select_folder_btn.setText("to " + QDir(selected_path).dirName())
-            Rules.original_path = selected_path
+            Rules.target_path = selected_path
 
         select_folder_btn.clicked.connect(select_folder_clicked)
 

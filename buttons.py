@@ -18,7 +18,7 @@ def add_folder_clicked():
     folder_path = QFileDialog.getExistingDirectory()
     folder_name = QDir(folder_path)
     selected_folders = folder_name.dirName()
-    Rules.target_path = folder_path
+    Rules.original_path = folder_path
     add_list_items(selected_folders, folder_name.path())
 
 
