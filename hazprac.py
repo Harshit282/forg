@@ -116,12 +116,18 @@ class Window(QWidget):
         update_combobox1(0)
 
         def onActivated():
+            conditions.combobox_value = combobox.currentText()
             if combobox.currentText() == 'Date Added':
                 date_edit.setHidden(False)
             else:
                 date_edit.setHidden(True)
 
         combobox.activated.connect(onActivated)
+
+        def combobox1_onActivated():
+            conditions.combobox1_value = combobox1.currentText()
+
+        combobox1.activated.connect(combobox1_onActivated)
         # here int values are as row, column, row_span, column_span....
         # Same for the next grid layout...
 
@@ -165,6 +171,7 @@ class Window(QWidget):
         panel3_grid.setRowStretch(panel3_grid.rowCount(), 1)
 
         def on_Activated():
+            conditions.combobox2_value = combobox2.currentText()
             if combobox2.currentText() == 'Rename':
                 line_edit2.setHidden(False)
                 select_folder_btn.setHidden(True)

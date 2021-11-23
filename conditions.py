@@ -1,5 +1,8 @@
 combobox_value = ''
-combobox_value1 = ''
-combobox_value2 = ''
+combobox1_value = ''
+combobox2_value = ''
 date_widget_value = ''
 line_edit_value = ''
+
+
+
