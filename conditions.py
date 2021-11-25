@@ -7,7 +7,7 @@ import datetime
 combobox_value = ''
 combobox1_value = ''
 combobox2_value = ''
-date_widget_value = ''
+date_widget_value = 0
 line_edit_value = ''
 original_path = r''
 target_path = r''
@@ -25,9 +25,9 @@ def conditions_applied():
         for subdir, dirs, files in os.walk(original_path):
             for file in files:
                 a = os.path.join(subdir, file)
-                print(combobox1_value)
                 filedate = int(datetime.datetime.fromtimestamp(os.path.getctime(a)).strftime('%Y%m%d'))
-                print(filedate)
+                # print(filedate)
+                # print(date_widget_value)
                 if combobox1_value == 'is':
                     if date_widget_value == filedate:
                         run_task(combobox2_value, a)
