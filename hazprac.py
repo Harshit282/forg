@@ -92,8 +92,8 @@ class Window(QWidget):
         date_edit.setHidden(True)
 
         def update_date():
-            value_date_edit = date_edit.date().toString('dd/MM/yyyy')
-            conditions.date_widget_value = value_date_edit
+            value_date_edit = date_edit.date().toString('yyyyMMdd')
+            conditions.date_widget_value = int(value_date_edit)
 
         date_edit.editingFinished.connect(update_date)
 

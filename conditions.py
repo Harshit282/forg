@@ -19,35 +19,39 @@ def conditions_applied():
             for file in files:
                 a = os.path.join(subdir, file)
                 if a.endswith(combobox1_value):
-                    if combobox2_value == 'Copy':
-                        Rules.copy(a, target_path)
-                    elif combobox2_value == 'Move':
-                        Rules.move(a, target_path)
-                    elif combobox2_value == 'Delete':
-                        Rules.delete(a)
-                    elif combobox2_value == 'Trash Bin':
-                        Rules.trash_bin(a)
-                    elif combobox2_value == 'Rename':
-                        Rules.rename(a)
+                    run_task(combobox2_value, a)
 
     if combobox_value == 'Date Added':
         for subdir, dirs, files in os.walk(original_path):
             for file in files:
                 a = os.path.join(subdir, file)
-                if date_widget_value == datetime.datetime.fromtimestamp(os.path.getctime(a)).strftime('%d/%m/%Y'):
-                    if combobox2_value == 'Copy':
-                        Rules.copy(a, target_path)
-                    elif combobox2_value == 'Move':
-                        Rules.move(a, target_path)
-                    elif combobox2_value == 'Delete':
-                        Rules.delete(a)
-                    elif combobox2_value == 'Trash Bin':
-                        Rules.trash_bin(a)
-                    elif combobox2_value == 'Rename':
-                        Rules.rename(a)
+                print(combobox1_value)
+                filedate = int(datetime.datetime.fromtimestamp(os.path.getctime(a)).strftime('%Y%m%d'))
+                print(filedate)
+                if combobox1_value == 'is':
+                    if date_widget_value == filedate:
+                        run_task(combobox2_value, a)
+                if combobox1_value == 'is before':
+                    if date_widget_value > filedate:
+                        run_task(combobox2_value, a)
+                if combobox1_value == 'is after':
+                    if date_widget_value < filedate:
+                        run_task(combobox2_value, a)
 
     if combobox_value == 'Empty files':
         pass
     if combobox_value == 'Old Files':
         pass
+
+def run_task(combobox_value, file_to_process):
+    if combobox_value == 'Copy':
+        Rules.copy(file_to_process, target_path)
+    elif combobox_value == 'Move':
+        Rules.move(file_to_process, target_path)
+    elif combobox_value == 'Delete':
+        Rules.delete(file_to_process)
+    elif combobox_value == 'Trash Bin':
+        Rules.trash_bin(file_to_process)
+    elif combobox_value == 'Rename':
+        Rules.rename(file_to_process)
 
