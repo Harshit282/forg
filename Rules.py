@@ -3,25 +3,25 @@ import os
 from send2trash import send2trash
 
 
-def move():
-    shutil.move(original_path, target_path)   # first file to be copied path... then destination path...
+def move(op, tp):
+    shutil.move(op, tp)   # first file to be copied path... then destination path...
 
 
-def copy(op,tp):
-    shutil.copy2(op,tp)  # first file to be copied path... then destination path...
+def copy(op, tp):
+    shutil.copy2(op, tp)  # first file to be copied path... then destination path...
 
 
-def delete():
-    shutil.rmtree(original_path)  # Enter Path of file to be deleted permanently here...
+def delete(op):
+    os.remove(op)  # Enter Path of file to be deleted permanently here...
 
 
-def trash_bin():
+def trash_bin(op):
     # deleting the file
-    send2trash(original_path)  # pass file path name here...
+    send2trash(op)  # pass file path name here...
 
 
-def rename():
-    os.chdir(original_path)  # path here...
+def rename(op):
+    os.chdir(op)  # path here...
 
     for count, f in enumerate(os.listdir()):
         f_name, f_ext = os.path.splitext(f)

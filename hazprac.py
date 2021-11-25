@@ -91,6 +91,12 @@ class Window(QWidget):
         date_edit.setDateTime(QDateTime.currentDateTime())
         date_edit.setHidden(True)
 
+        def update_date():
+            value_date_edit = date_edit.date().toString('dd/MM/yyyy')
+            conditions.date_widget_value = value_date_edit
+
+        date_edit.editingFinished.connect(update_date)
+
         condition_combobox_data = {
             'Size less than(MB)': ['1', '5', '10'],
             'Image Extension': ['.jpg', '.png', '.gif'],
@@ -177,9 +183,9 @@ class Window(QWidget):
                 select_folder_btn.setHidden(True)
             else:
                 line_edit2.setHidden(True)
-                if combobox2.currentText() == 'Copy' or 'Move':
+                if combobox2.currentText() == 'Copy' or combobox2.currentText() == 'Move':
                     select_folder_btn.setHidden(False)
-                elif combobox2.currentText() == 'Delete' or 'Trash Bin':
+                elif combobox2.currentText() == 'Delete' or combobox2.currentText() == 'Trash Bin':
                     select_folder_btn.setHidden(True)
 
         combobox2.activated.connect(on_Activated)
