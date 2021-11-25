@@ -19,16 +19,15 @@ def add_folder_clicked():
     folder_path = QFileDialog.getExistingDirectory()
     folder_name = QDir(folder_path)
     selected_folders = folder_name.dirName()
-    Rules.original_path = folder_path
     add_list_items(selected_folders, folder_name.path())
 
 
 def resume_pause_clicked():
-    conditions.filter_size()
+    conditions.conditions_applied()
 
 
 def save_button_clicked():
-    print("Hello u added me")
+    pass
 
 
 def discard_button_clicked():

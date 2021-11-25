@@ -6,20 +6,24 @@ import Rules
 combobox_value = ''
 combobox1_value = ''
 combobox2_value = ''
-selected_folder_value = ''
 date_widget_value = ''
 line_edit_value = ''
+original_path = r''
+target_path = r''
 
-files_to_process = dict()
-def get_fileinfo(folder):
-    for subdir, dirs, files in os.walk(folder):
+
+def conditions_applied():
+    for subdir, dirs, files in os.walk(original_path):
         for file in files:
-            files_to_process[os.path.join(subdir, file)] = os.path.getsize(os.path.join(subdir, file))
-def filter_size():
-    for k,v in files_to_process.items():
-        if v / 1000 < int(combobox1_value):
-            Rules.original_path = k
-            Rules.target_path = selected_folder_value
-            action = combobox2_value.casefold()
-            eval("Rules."+ action + "()")
+            a = os.path.join(subdir, file)
+            if a.endswith(combobox1_value):
+                # print(a)
+                if combobox2_value == 'Copy':
+                    Rules.copy(a, target_path)
+                elif combobox2_value == 'Move':
+                    Rules.move(a, target_path)
+                elif combobox2_value == 'Delete':
+                    Rules.delete(a)
+                elif combobox2_value == 'Trash Bin':
+                    Rules.trash_bin(a)
 

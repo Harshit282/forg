@@ -2,16 +2,13 @@ import shutil
 import os
 from send2trash import send2trash
 
-original_path = r''
-target_path = r''
-
 
 def move():
     shutil.move(original_path, target_path)   # first file to be copied path... then destination path...
 
 
 def copy():
-    shutil.copy2(original_path, target_path)  # first file to be copied path... then destination path...
+    shutil.copytree(original_path, target_path)  # first file to be copied path... then destination path...
 
 
 def delete():
