@@ -93,9 +93,9 @@ class Window(QWidget):
 
         condition_combobox_data = {
             'Size less than(MB)': ['1', '5', '10'],
-            'Image Extension': ['Default', '.jpg', '.png', '.gif'],
-            'Video Extension': ['Default', '.mp4', '.mkv', '.m4p', '.m4v'],
-            'Audio Extension': ['Default', '.mp3', '.mp4a', '.gig'],
+            'Image Extension': ['.jpg', '.png', '.gif'],
+            'Video Extension': ['.mp4', '.mkv', '.m4p', '.m4v'],
+            'Audio Extension': ['.mp3', '.mp4a', '.gig'],
             'Empty Files': ['0 bytes'],
             'Old Files': ['<1 Month', '<3 Months', '<6 Months', '<1 Year', '>1 Year'],
             'Date Added': ['is', 'is before', 'is after']
