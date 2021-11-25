@@ -10,7 +10,7 @@ import conditions
 class Window(QWidget):
     def __init__(self):
         super().__init__()
-        self.setGeometry(100, 100, 1000, 500)
+        self.setGeometry(100, 100, 800, 500)
         self.setWindowTitle('File Organizer')
         main_window_vbox = QVBoxLayout()
         icon1_hbox = QHBoxLayout()
@@ -76,10 +76,6 @@ class Window(QWidget):
         # Used Grid Layout here...
 
         panel3_label_rule1 = QLabel('If all of the following conditions are met: ')
-        condition_add_button = QPushButton()
-        condition_add_button.setIcon(QIcon("icons/add icon.png"))
-        condition_remove_button = QPushButton()
-        condition_remove_button.setIcon(QIcon("icons/remove icon.png"))
         combobox = QComboBox()
         combobox.setModel(model)
         combobox1 = QComboBox()
@@ -141,14 +137,8 @@ class Window(QWidget):
         panel3_grid.addWidget(combobox, 1, 0)
         panel3_grid.addWidget(combobox1, 1, 1)
         panel3_grid.addWidget(date_edit, 1, 2)
-        panel3_grid.addWidget(condition_remove_button, 1, 3)
-        panel3_grid.addWidget(condition_add_button, 1, 4)
 
         panel3_label_rule2 = QLabel('Do the following to the selected folder/files: ')
-        rule_add_button = QPushButton()
-        rule_add_button.setIcon(QIcon("icons/add icon.png"))
-        rule_remove_button = QPushButton()
-        rule_remove_button.setIcon(QIcon("icons/remove icon.png"))
         combobox2 = QComboBox()
         combobox2.addItem('Copy')
         combobox2.addItem('Move')
@@ -170,8 +160,6 @@ class Window(QWidget):
         panel3_grid.addWidget(combobox2, 4, 0)
         panel3_grid.addWidget(select_folder_btn, 4, 1)
         panel3_grid.addWidget(line_edit2, 4, 2)
-        panel3_grid.addWidget(rule_remove_button, 4, 3)
-        panel3_grid.addWidget(rule_add_button, 4, 4)
         panel3_grid.setVerticalSpacing(20)
         # Prevent rows from stretching to take all available space
         panel3_grid.setRowStretch(panel3_grid.rowCount(), 1)
