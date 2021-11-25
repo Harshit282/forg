@@ -17,7 +17,7 @@ def conditions_applied():
         for file in files:
             a = os.path.join(subdir, file)
             if a.endswith(combobox1_value):
-                # print(a)
+                print(a)
                 if combobox2_value == 'Copy':
                     Rules.copy(a, target_path)
                 elif combobox2_value == 'Move':

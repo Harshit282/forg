@@ -7,8 +7,8 @@ def move():
     shutil.move(original_path, target_path)   # first file to be copied path... then destination path...
 
 
-def copy():
-    shutil.copytree(original_path, target_path)  # first file to be copied path... then destination path...
+def copy(op,tp):
+    shutil.copy2(op,tp)  # first file to be copied path... then destination path...
 
 
 def delete():
