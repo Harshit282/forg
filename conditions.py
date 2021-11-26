@@ -39,10 +39,17 @@ def conditions_applied():
                     if date_widget_value < file_date:
                         run_task(combobox2_value, a)
 
-    if combobox_value == 'Empty files':
-        pass
+    if combobox_value == 'Empty Files':
+        for subdir, dirs, files in os.walk(original_path):
+            for file in files:
+                a = os.path.join(subdir, file)
+                size_of_file = size(os.path.getsize(a))
+                if size_of_file == '0B':
+                    run_task(combobox2_value, a)
+
     if combobox_value == 'Old Files':
         pass
+
     if combobox_value == 'Size':
         for subdir, dirs, files in os.walk(original_path):
             for file in files:
