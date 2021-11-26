@@ -3,7 +3,6 @@ import buttons
 import os
 import Rules
 import datetime
-from hurry.filesize import size
 
 combobox_value = ''
 combobox1_value = ''
@@ -12,7 +11,15 @@ date_widget_value = 0
 line_edit_value = ''
 original_path = r''
 target_path = r''
-
+# https://stackoverflow.com/a/14996816
+suffixes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
+def humansize(nbytes):
+    i = 0
+    while nbytes >= 1000 and i < len(suffixes)-1:
+        nbytes /= 1000.
+        i += 1
+    f = ('%.1f' % nbytes).rstrip('0').rstrip('.')
+    return '%s %s' % (f, suffixes[i])
 
 def conditions_applied():
     if combobox_value == 'Image Extension' or combobox_value == 'Audio Extension' or combobox_value == 'Video Extension':
@@ -54,8 +61,8 @@ def conditions_applied():
         for subdir, dirs, files in os.walk(original_path):
             for file in files:
                 a = os.path.join(subdir, file)
-                size_of_file = size(os.path.getsize(a))
-                if size_of_file == line_edit_value + combobox1_value:
+                size_of_file = humansize(os.path.getsize(a))
+                if size_of_file == line_edit_value + " " + combobox1_value:
                     run_task(combobox2_value, a)
 
 
