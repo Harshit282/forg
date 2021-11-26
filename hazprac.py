@@ -94,7 +94,7 @@ class Window(QWidget):
         date_edit.editingFinished.connect(update_date)
 
         condition_combobox_data = {
-            'Size less than(MB)': ['1', '5', '10'],
+            'Size': ['B', 'K', 'M', 'G', 'T', 'P'],
             'Image Extension': ['.jpg', '.png', '.gif'],
             'Video Extension': ['.mp4', '.mkv', '.m4p', '.m4v'],
             'Audio Extension': ['.mp3', '.mp4a', '.gig'],
@@ -117,8 +117,20 @@ class Window(QWidget):
         combobox.currentIndexChanged.connect(update_combobox1)
         update_combobox1(0)
 
+        line_edit3 = QLineEdit()
+        line_edit3.setHidden(True)
+        line_edit3.setValidator(QDoubleValidator())
+
+        def get_value():
+            conditions.line_edit_value = line_edit3.text()
+        line_edit3.editingFinished.connect(get_value)
+
         def onActivated():
             conditions.combobox_value = combobox.currentText()
+            if combobox.currentText() == 'Size':
+                line_edit3.setHidden(False)
+            else:
+                line_edit3.setHidden(True)
             if combobox.currentText() == 'Date Added':
                 date_edit.setHidden(False)
             else:
@@ -136,6 +148,7 @@ class Window(QWidget):
         panel3_grid.addWidget(panel3_label_rule1, 0, 0, 1, 3)
         panel3_grid.addWidget(combobox, 1, 0)
         panel3_grid.addWidget(combobox1, 1, 1)
+        panel3_grid.addWidget(line_edit3, 1, 2)
         panel3_grid.addWidget(date_edit, 1, 2)
 
         panel3_label_rule2 = QLabel('Do the following to the selected folder/files: ')
