@@ -94,12 +94,11 @@ class Window(QWidget):
         date_edit.editingFinished.connect(update_date)
 
         condition_combobox_data = {
-            'Size': ['B', 'K', 'M', 'G', 'T', 'P'],
+            'Size': ['B', 'KB', 'MB', 'GB', 'TB', 'PB'],
             'Image Extension': ['.jpg', '.png', '.gif'],
             'Video Extension': ['.mp4', '.mkv', '.m4p', '.m4v'],
             'Audio Extension': ['.mp3', '.mp4a', '.gig'],
             'Empty Files': ['0 bytes'],
-            'Old Files': ['<1 Month', '<3 Months', '<6 Months', '<1 Year', '>1 Year'],
             'Date Added': ['is', 'is before', 'is after']
         }
         for condition_combobox_key, condition_combobox_value in condition_combobox_data.items():
