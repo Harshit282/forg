@@ -19,6 +19,8 @@ class Window(QWidget):
         panel1_vbox = QVBoxLayout()
         panel2_vbox = QVBoxLayout()
         panel3_vbox = QVBoxLayout()
+        frame = QFrame()
+        frame.setLayout(panel3_vbox)
         chk_vbox = QVBoxLayout()
         all_panel_hbox = QHBoxLayout()
         btm_hbox = QHBoxLayout()
@@ -240,12 +242,16 @@ class Window(QWidget):
             conditions.original_path = root_dir
 
         listbox1.itemClicked.connect(selectionChanged)
+        def ruleSelected():
+            frame.show()
+        listbox2.itemClicked.connect(ruleSelected)
 
         # Packing layouts into the main window which is in vertical layout...
 
         all_panel_hbox.addLayout(panel1_vbox)
         all_panel_hbox.addLayout(panel2_vbox)
-        all_panel_hbox.addLayout(panel3_vbox)
+        all_panel_hbox.addWidget(frame)
+        frame.hide()
         # Stretch factor of 1,1,3 leads to 20%, 20%, 60% used space
         # for panel 1,2,3 respectively
         all_panel_hbox.setStretchFactor(panel1_vbox, 1)
