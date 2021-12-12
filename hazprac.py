@@ -19,8 +19,9 @@ class Window(QWidget):
         panel1_vbox = QVBoxLayout()
         panel2_vbox = QVBoxLayout()
         panel3_vbox = QVBoxLayout()
+        no_rule_label = QLabel("No rule selected")
+        no_rule_label.setAlignment(Qt.AlignCenter)
         frame = QFrame()
-        frame.setLayout(panel3_vbox)
         chk_vbox = QVBoxLayout()
         all_panel_hbox = QHBoxLayout()
         btm_hbox = QHBoxLayout()
@@ -243,20 +244,24 @@ class Window(QWidget):
 
         listbox1.itemClicked.connect(selectionChanged)
         def ruleSelected():
+            frame.setLayout(panel3_vbox)
             frame.show()
+            no_rule_label.hide()
         listbox2.itemClicked.connect(ruleSelected)
 
         # Packing layouts into the main window which is in vertical layout...
 
         all_panel_hbox.addLayout(panel1_vbox)
         all_panel_hbox.addLayout(panel2_vbox)
+        all_panel_hbox.addWidget(no_rule_label)
         all_panel_hbox.addWidget(frame)
         frame.hide()
         # Stretch factor of 1,1,3 leads to 20%, 20%, 60% used space
         # for panel 1,2,3 respectively
         all_panel_hbox.setStretchFactor(panel1_vbox, 1)
         all_panel_hbox.setStretchFactor(panel2_vbox, 1)
-        all_panel_hbox.setStretchFactor(panel3_vbox, 3)
+        all_panel_hbox.setStretchFactor(frame, 3)
+        all_panel_hbox.setStretchFactor(no_rule_label, 3)
         main_window_vbox.addLayout(all_panel_hbox)
 
         self.setLayout(main_window_vbox)
