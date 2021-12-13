@@ -12,6 +12,11 @@ ENV/
 env.bak/
 venv.bak/
 
+# Database file
+# It should be moved to appropriate location later on, for now let it
+# stay in repo but at least let git ignore it.
+database.db
+
 # Idea/Pycharm settings
 .idea
 
