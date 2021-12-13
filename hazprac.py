@@ -251,15 +251,15 @@ class Window(QWidget):
             no_rule_label.hide()
         listbox2.itemClicked.connect(ruleSelected)
 
-        # part of dbms system...
+        # part of database system...
         def rule_insertion():
-            conn = dbms.sql_connection()
-            dbms.rule_table(conn)
+            conn = database.sql_connection()
+            database.rule_table(conn)
             for i in range(len(listbox2)):
                 t = 1
                 values = (listbox2.item(i).text(), t)
                 t += 1
-                if dbms.rule_insert(conn, values):
+                if database.rule_insert(conn, values):
                     print("R Records Inserted")
                 else:
                     print("R Records not Inserted")

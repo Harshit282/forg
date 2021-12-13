@@ -31,15 +31,15 @@ def resume_pause_clicked():
 
 
 def save_button_clicked():
-    conn = dbms.sql_connection()
-    dbms.sql_table(conn)
+    conn = database.sql_connection()
+    database.sql_table(conn)
     t = 1
     # Here t is the folder_id (needs to changed)
     for i in a:
 
         values = (t, i, a.get(i))
         t += 1
-        if dbms.sql_insert(conn, values):
+        if database.sql_insert(conn, values):
             print("F Records Inserted")
         else:
             print("F Records not Inserted")
