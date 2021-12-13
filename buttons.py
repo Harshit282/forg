@@ -18,9 +18,12 @@ def add_list_items(name, path):
 def add_folder_clicked():
     global selected_folders
     folder_path = QFileDialog.getExistingDirectory()
-    folder_name = QDir(folder_path)
-    selected_folders = folder_name.dirName()
-    add_list_items(selected_folders, folder_name.path())
+    # folder_path will be a empty string if no directory is choosen,
+    # and an empty string evaluates to false in python
+    if folder_path:
+        folder_name = QDir(folder_path)
+        selected_folders = folder_name.dirName()
+        add_list_items(selected_folders, folder_name.path())
 
 
 def resume_pause_clicked():
