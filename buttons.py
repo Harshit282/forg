@@ -4,6 +4,7 @@ from PyQt5.QtGui import *
 import os
 import Rules
 import conditions
+import database
 
 selected_folders = ''
 
@@ -27,7 +28,18 @@ def resume_pause_clicked():
 
 
 def save_button_clicked():
-    pass
+    conn = dbms.sql_connection()
+    dbms.sql_table(conn)
+    t = 1
+    # Here t is the folder_id (needs to changed)
+    for i in a:
+
+        values = (t, i, a.get(i))
+        t += 1
+        if dbms.sql_insert(conn, values):
+            print("F Records Inserted")
+        else:
+            print("F Records not Inserted")
 
 
 def discard_button_clicked():

@@ -5,6 +5,7 @@ import buttons
 import os
 import Rules
 import conditions
+import database
 
 
 class Window(QWidget):
@@ -243,11 +244,27 @@ class Window(QWidget):
             conditions.original_path = root_dir
 
         listbox1.itemClicked.connect(selectionChanged)
+
         def ruleSelected():
             frame.setLayout(panel3_vbox)
             frame.show()
             no_rule_label.hide()
         listbox2.itemClicked.connect(ruleSelected)
+
+        # part of dbms system...
+        def rule_insertion():
+            conn = dbms.sql_connection()
+            dbms.rule_table(conn)
+            for i in range(len(listbox2)):
+                t = 1
+                values = (listbox2.item(i).text(), t)
+                t += 1
+                if dbms.rule_insert(conn, values):
+                    print("R Records Inserted")
+                else:
+                    print("R Records not Inserted")
+
+        listbox1.itemClicked.connect(rule_insertion)
 
         # Packing layouts into the main window which is in vertical layout...
 
