@@ -6,7 +6,7 @@ import Rules
 import conditions
 import database
 
-selected_folders = ''
+folder_inserted = False
 
 a = dict()
 
@@ -14,36 +14,29 @@ a = dict()
 def add_list_items(name, path):
     a[name] = path
 
-
 def add_folder_clicked():
-    global selected_folders
+    global folder_inserted
     folder_path = QFileDialog.getExistingDirectory()
     # folder_path will be a empty string if no directory is choosen,
     # and an empty string evaluates to false in python
     if folder_path:
-        folder_name = QDir(folder_path)
-        selected_folders = folder_name.dirName()
-        add_list_items(selected_folders, folder_name.path())
-
-
-def resume_pause_clicked():
-    conditions.conditions_applied()
-
-
-def save_button_clicked():
-    conn = database.sql_connection()
-    database.sql_table(conn)
-    t = 1
-    # Here t is the folder_id (needs to changed)
-    for i in a:
-
-        values = (t, i, a.get(i))
-        t += 1
+        folder = QDir(folder_path)
+        selected_folder = folder.dirName()
+        conn = database.sql_connection()
+        database.folder_table(conn)
+        values = (selected_folder, str(folder_path))
         if database.sql_insert(conn, values):
+            add_list_items(selected_folder, folder.path())
+            folder_inserted = True
             print("F Records Inserted")
         else:
             print("F Records not Inserted")
 
+
+def resume_pause_clicked():
+    conditions.conditions_applied()
+def save_button_clicked():
+    pass
 
 def discard_button_clicked():
     print("Hello u added me")

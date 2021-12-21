@@ -208,7 +208,9 @@ class Window(QWidget):
         # Buttons/Icons clicked actions are defined here...
         # They have been imported from buttons python file...
         def update_folder_list():
-            listbox1.insertItem(0, buttons.selected_folders)
+            if buttons.folder_inserted:
+                listbox1.addItem(database.fetch_last_folder())
+                buttons.folder_inserted = False
 
         btn1.clicked.connect(buttons.add_folder_clicked)
         btn1.clicked.connect(update_folder_list)
@@ -239,6 +241,22 @@ class Window(QWidget):
         save_btn.clicked.connect(buttons.save_button_clicked)
         discard_btn.clicked.connect(buttons.discard_button_clicked)
 
+        # Fetch values from database and insert into listwidget
+        conn = database.sql_connection()
+        database.folder_table(conn)
+        c = conn.cursor()
+        c.execute("""select Folder_Name from FOLDER""")
+        for row in c.fetchall():
+            # A list item is returned, so remove ' and , from it
+            row = str(row)[2:-3]
+            c.execute('select Folder_Path from FOLDER where Folder_Name = ?', [row])
+            print(row)
+            path = c.fetchone()
+            path = str(path)[2:-3]
+            print(path)
+            buttons.add_list_items(row, path)
+            listbox1.addItem(row)
+
         def selectionChanged(item):
             root_dir = buttons.a.get(item.text())
             conditions.original_path = root_dir
@@ -256,10 +274,8 @@ class Window(QWidget):
             conn = database.sql_connection()
             database.rule_table(conn)
             for i in range(len(listbox2)):
-                t = 1
-                values = (listbox2.item(i).text(), t)
-                t += 1
-                if database.rule_insert(conn, values):
+                value = (listbox2.item(i).text())
+                if database.rule_insert(conn, value):
                     print("R Records Inserted")
                 else:
                     print("R Records not Inserted")

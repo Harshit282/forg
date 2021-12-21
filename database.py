@@ -10,14 +10,14 @@ def sql_connection():
         print(er)
 
 
-def sql_table(con):
+def folder_table(con):
     try:
         cursor = con.cursor()
         cursor.execute("""CREATE TABLE if not exists FOLDER(
 ID      integer        PRIMARY KEY      AUTOINCREMENT,
-Folder_ID     TEXT             NOT NULL,
 Folder_Name   TEXT             NOT NULL,
-Folder_Path   TEXT             NOT NULL)""")
+Folder_Path   TEXT             NOT NULL,
+unique (Folder_Name, Folder_Path))""")
     except Error as er:
         print(er)
     finally:
@@ -29,8 +29,7 @@ def rule_table(con):
         cursor = con.cursor()
         cursor.execute("""CREATE TABLE if not exists RULE(
 ID      integer        PRIMARY KEY      AUTOINCREMENT,
-Rule_Name   TEXT             NOT NULL,
-Rule_ID     TEXT             NOT NULL)""")
+Rule_Name   TEXT             NOT NULL)""")
     except Error as er:
         print(er)
     finally:
@@ -40,7 +39,7 @@ Rule_ID     TEXT             NOT NULL)""")
 def sql_insert(con, values):
     try:
         cursor = con.cursor()
-        cursor.execute('INSERT INTO FOLDER(Folder_ID, Folder_Name, Folder_Path) VALUES(?, ?, ?)', values)
+        cursor.execute('INSERT INTO FOLDER(Folder_Name, Folder_Path) VALUES(?, ?)', values)
         con.commit()
         return True
     except Error as er:
@@ -51,9 +50,17 @@ def sql_insert(con, values):
 def rule_insert(con, values):
     try:
         cursor = con.cursor()
-        cursor.execute('INSERT INTO RULE(Rule_Name, Rule_ID) VALUES(?, ?)', values)
+        cursor.execute('INSERT INTO RULE(Rule_Name) VALUES(?)', values)
         con.commit()
         return True
     except Error as er:
         print(er.args)
         return False
+
+
+def fetch_last_folder():
+    conn = sql_connection()
+    c = conn.cursor()
+    c.execute("""select Folder_name from FOLDER order by ID desc limit 1""")
+    last_folder = str(c.fetchone())[2:-3]
+    return last_folder
