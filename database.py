@@ -1,5 +1,6 @@
 import sqlite3
 from sqlite3 import Error
+import buttons
 
 
 def sql_connection():
@@ -58,9 +59,17 @@ def rule_insert(con, values):
         return False
 
 
-def fetch_last_folder():
+def init_folder_list():
     conn = sql_connection()
+    folder_table(conn)
     c = conn.cursor()
-    c.execute("""select Folder_name from FOLDER order by ID desc limit 1""")
-    last_folder = str(c.fetchone())[2:-3]
-    return last_folder
+    c.execute("""select Folder_Name from FOLDER""")
+    for row in c.fetchall():
+        # A list item is returned, so remove ' and , from it
+        row = str(row)[2:-3]
+        c.execute('select Folder_Path from FOLDER where Folder_Name = ?', [row])
+        print(row)
+        path = c.fetchone()
+        path = str(path)[2:-3]
+        print(path)
+        buttons.add_list_items(row, path)

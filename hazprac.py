@@ -49,6 +49,9 @@ class Window(QWidget):
         panel1_vbox.addLayout(icon1_hbox)
         panel1_vbox.addWidget(folders_label)
         panel1_vbox.addWidget(listbox1)
+        database.init_folder_list()
+        for k in buttons.a.keys():
+            listbox1.addItem(k)
 
         # Panel 2 starts from here...
 
@@ -209,7 +212,7 @@ class Window(QWidget):
         # They have been imported from buttons python file...
         def update_folder_list():
             if buttons.folder_inserted:
-                listbox1.addItem(database.fetch_last_folder())
+                listbox1.addItem(button.a.keys()[-1])
                 buttons.folder_inserted = False
 
         btn1.clicked.connect(buttons.add_folder_clicked)
@@ -242,20 +245,7 @@ class Window(QWidget):
         discard_btn.clicked.connect(buttons.discard_button_clicked)
 
         # Fetch values from database and insert into listwidget
-        conn = database.sql_connection()
-        database.folder_table(conn)
-        c = conn.cursor()
-        c.execute("""select Folder_Name from FOLDER""")
-        for row in c.fetchall():
-            # A list item is returned, so remove ' and , from it
-            row = str(row)[2:-3]
-            c.execute('select Folder_Path from FOLDER where Folder_Name = ?', [row])
-            print(row)
-            path = c.fetchone()
-            path = str(path)[2:-3]
-            print(path)
-            buttons.add_list_items(row, path)
-            listbox1.addItem(row)
+
 
         def selectionChanged(item):
             root_dir = buttons.a.get(item.text())
