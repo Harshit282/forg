@@ -212,7 +212,7 @@ class Window(QWidget):
         # They have been imported from buttons python file...
         def update_folder_list():
             if buttons.folder_inserted:
-                listbox1.addItem(button.a.keys()[-1])
+                listbox1.addItem(list(buttons.a)[-1])
                 buttons.folder_inserted = False
 
         btn1.clicked.connect(buttons.add_folder_clicked)
@@ -243,9 +243,6 @@ class Window(QWidget):
         btn3.clicked.connect(buttons.resume_pause_clicked)
         save_btn.clicked.connect(buttons.save_button_clicked)
         discard_btn.clicked.connect(buttons.discard_button_clicked)
-
-        # Fetch values from database and insert into listwidget
-
 
         def selectionChanged(item):
             root_dir = buttons.a.get(item.text())
