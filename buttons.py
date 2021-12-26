@@ -36,7 +36,7 @@ def add_folder_clicked():
 def resume_pause_clicked():
     conditions.conditions_applied()
 def save_button_clicked():
-    pass
+    database.insertRule()
 
 def discard_button_clicked():
     print("Hello u added me")

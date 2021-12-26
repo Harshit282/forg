@@ -227,6 +227,14 @@ class Window(QWidget):
                 checkbox.setText(text)
                 listbox2.addItem(checkbox)
 
+        def add_rules(name):
+            checkbox = QListWidgetItem()
+            checkbox.setFlags(checkbox.flags() | Qt.ItemIsUserCheckable)
+            checkbox.setCheckState(Qt.Unchecked)
+            checkbox.setText(name)
+            listbox2.addItem(checkbox)
+
+
         def rule_item_clicked():
             i = listbox2.selectedItems()[0]
             line_edit.setText(i.text())
@@ -247,8 +255,13 @@ class Window(QWidget):
         def selectionChanged(item):
             root_dir = buttons.a.get(item.text())
             conditions.original_path = root_dir
+            listbox2.clear()
+            Rules.rules_list.clear()
+            database.initRules()
+            for r in Rules.rules_list:
+                print(r)
+                add_rules(r)
 
-        listbox1.itemClicked.connect(selectionChanged)
 
         def ruleSelected():
             frame.setLayout(panel3_vbox)
@@ -256,18 +269,15 @@ class Window(QWidget):
             no_rule_label.hide()
         listbox2.itemClicked.connect(ruleSelected)
 
-        # part of database system...
-        def rule_insertion():
-            conn = database.sql_connection()
-            database.rule_table(conn)
-            for i in range(len(listbox2)):
-                value = (listbox2.item(i).text())
-                if database.rule_insert(conn, value):
-                    print("R Records Inserted")
-                else:
-                    print("R Records not Inserted")
+        def ruleUnselected():
+            frame.hide()
+            no_rule_label.show()
 
-        listbox1.itemClicked.connect(rule_insertion)
+        # part of database system...
+        listbox2.itemClicked.connect(database.getSelectedRule)
+        listbox1.itemClicked.connect(database.getSelectedFolder)
+        listbox1.itemClicked.connect(selectionChanged)
+        listbox1.itemClicked.connect(ruleUnselected)
 
         # Packing layouts into the main window which is in vertical layout...
 
