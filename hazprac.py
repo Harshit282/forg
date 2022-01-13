@@ -235,9 +235,9 @@ class Window(QWidget):
             listbox2.addItem(checkbox)
 
 
-        def rule_item_clicked():
-            i = listbox2.selectedItems()[0]
-            line_edit.setText(i.text())
+        def rule_item_clicked(item):
+            if item.isSelected():
+                line_edit.setText(item.text())
 
         listbox2.itemClicked.connect(rule_item_clicked)
 
@@ -263,10 +263,11 @@ class Window(QWidget):
                 add_rules(r)
 
 
-        def ruleSelected():
-            frame.setLayout(panel3_vbox)
-            frame.show()
-            no_rule_label.hide()
+        def ruleSelected(item):
+            if item.isSelected():
+                frame.setLayout(panel3_vbox)
+                frame.show()
+                no_rule_label.hide()
         listbox2.itemClicked.connect(ruleSelected)
 
         def ruleUnselected():
