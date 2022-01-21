@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
+from PyQt5.QtSql import *
 import buttons
 import os
 import Rules
@@ -11,9 +12,21 @@ import database
 class Window(QWidget):
     def __init__(self):
         super().__init__()
+        db = QSqlDatabase.addDatabase("QSQLITE")
+        db.setDatabaseName("database.db")
+        db.open()
         self.setGeometry(100, 100, 800, 500)
         self.setWindowTitle('File Organizer')
+        self.condition_model = QSqlTableModel(self)
+        self.condition_model.setTable("CONDITIONS")
+        self.condition_model.setEditStrategy(QSqlTableModel.OnManualSubmit)
+        self.condition_mapper = QDataWidgetMapper(self)
+        self.condition_mapper.setSubmitPolicy(QDataWidgetMapper.ManualSubmit)
+        self.condition_mapper.setModel(self.condition_model)
         main_window_vbox = QVBoxLayout()
+        table = QTableView()
+        table.setModel(self.condition_model)
+        table.show()
         icon1_hbox = QHBoxLayout()
         icon2_hbox = QHBoxLayout()
         icon3_hbox = QHBoxLayout()
@@ -83,10 +96,10 @@ class Window(QWidget):
         # Used Grid Layout here...
 
         panel3_label_rule1 = QLabel('If all of the following conditions are met: ')
-        combobox = QComboBox()
-        combobox.setModel(model)
-        combobox1 = QComboBox()
-        combobox1.setModel(model)
+        condition = QComboBox()
+        condition.setModel(model)
+        operator = QComboBox()
+        operator.setModel(model)
 
         # Display Calender Here....
 
@@ -101,61 +114,74 @@ class Window(QWidget):
         date_edit.editingFinished.connect(update_date)
 
         condition_combobox_data = {
-            'Size': ['B', 'KB', 'MB', 'GB', 'TB', 'PB'],
-            'Image Extension': ['.jpg', '.png', '.gif'],
-            'Video Extension': ['.mp4', '.mkv', '.m4p', '.m4v'],
-            'Audio Extension': ['.mp3', '.mp4a', '.gig'],
-            'Empty Files': ['0 bytes'],
+            'Size': ['is', 'less than', 'greater than'],
+            'Extension': ['is', 'is not'],
             'Date Added': ['is', 'is before', 'is after']
         }
+        units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
         for condition_combobox_key, condition_combobox_value in condition_combobox_data.items():
             combobox_item = QStandardItem(condition_combobox_key)
             model.appendRow(combobox_item)
-            for value in condition_combobox_value:
-                combobox1_item = QStandardItem(value)
+            for size_value in condition_combobox_value:
+                combobox1_item = QStandardItem(size_value)
                 combobox_item.appendRow(combobox1_item)
 
         def update_combobox1(index):
-            index_value = model.index(index, 0, combobox.rootModelIndex())
-            combobox1.setRootModelIndex(index_value)
-            combobox1.setCurrentIndex(0)
+            index_value = model.index(index, 0, condition.rootModelIndex())
+            operator.setRootModelIndex(index_value)
+            operator.setCurrentIndex(0)
 
-        combobox.currentIndexChanged.connect(update_combobox1)
+        condition.currentTextChanged.connect(lambda x: update_combobox1(condition.currentIndex()))
         update_combobox1(0)
 
-        line_edit3 = QLineEdit()
-        line_edit3.setHidden(True)
-        line_edit3.setValidator(QDoubleValidator())
+        size_value = QLineEdit()
+        size_value.setHidden(False)
+        size_value.setValidator(QDoubleValidator())
+        ext_value = QLineEdit()
+        ext_value.setHidden(True)
+        unit = QComboBox()
+        for u in units:
+            unit.addItem(u)
 
         def get_value():
-            conditions.line_edit_value = line_edit3.text()
-        line_edit3.editingFinished.connect(get_value)
+            conditions.line_edit_value = size_value.text()
+        size_value.editingFinished.connect(get_value)
 
         def onActivated():
-            conditions.combobox_value = combobox.currentText()
-            if combobox.currentText() == 'Size':
-                line_edit3.setHidden(False)
-            else:
-                line_edit3.setHidden(True)
-            if combobox.currentText() == 'Date Added':
-                date_edit.setHidden(False)
-            else:
+            conditions.combobox_value = condition.currentText()
+            if condition.currentText() == 'Extension':
+                ext_value.setHidden(False)
+                size_value.setHidden(True)
+                unit.setHidden(True)
                 date_edit.setHidden(True)
+            if condition.currentText() == 'Date Added':
+                date_edit.setHidden(False)
+                size_value.setHidden(True)
+                ext_value.setHidden(True)
+                unit.setHidden(True)
+            if condition.currentText() == 'Size':
+                size_value.setHidden(False)
+                unit.setHidden(False)
+                date_edit.setHidden(True)
+                ext_value.setHidden(True)
 
-        combobox.activated.connect(onActivated)
+
+        condition.currentIndexChanged.connect(onActivated)
 
         def combobox1_onActivated():
-            conditions.combobox1_value = combobox1.currentText()
+            conditions.combobox1_value = operator.currentText()
 
-        combobox1.activated.connect(combobox1_onActivated)
+        operator.activated.connect(combobox1_onActivated)
         # here int values are as row, column, row_span, column_span....
         # Same for the next grid layout...
 
         panel3_grid.addWidget(panel3_label_rule1, 0, 0, 1, 3)
-        panel3_grid.addWidget(combobox, 1, 0)
-        panel3_grid.addWidget(combobox1, 1, 1)
-        panel3_grid.addWidget(line_edit3, 1, 2)
+        panel3_grid.addWidget(condition, 1, 0)
+        panel3_grid.addWidget(operator, 1, 1)
+        panel3_grid.addWidget(size_value, 1, 2)
+        panel3_grid.addWidget(unit, 1, 3)
         panel3_grid.addWidget(date_edit, 1, 2)
+        panel3_grid.addWidget(ext_value, 1, 2)
 
         panel3_label_rule2 = QLabel('Do the following to the selected folder/files: ')
         combobox2 = QComboBox()
@@ -182,6 +208,12 @@ class Window(QWidget):
         panel3_grid.setVerticalSpacing(20)
         # Prevent rows from stretching to take all available space
         panel3_grid.setRowStretch(panel3_grid.rowCount(), 1)
+        self.condition_mapper.addMapping(condition, 1, b'currentIndex')
+        self.condition_mapper.addMapping(operator, 2, b'currentIndex')
+        self.condition_mapper.addMapping(size_value, 3)
+        self.condition_mapper.addMapping(ext_value, 4)
+        self.condition_mapper.addMapping(date_edit, 5, b'date')
+        self.condition_mapper.addMapping(unit, 6, b'currentIndex')
 
         def on_Activated():
             conditions.combobox2_value = combobox2.currentText()
@@ -198,6 +230,7 @@ class Window(QWidget):
         combobox2.activated.connect(on_Activated)
 
         panel3_vbox.addLayout(panel3_grid)
+
 
         # bottom buttons...
 
@@ -246,9 +279,13 @@ class Window(QWidget):
             i.setText(line_edit.text())
 
         line_edit.editingFinished.connect(update_rule_name)
+        def save_button_clicked():
+            self.condition_mapper.submit()
+            self.condition_model.submitAll()
 
         btn2.clicked.connect(update_rule_list)
         btn3.clicked.connect(buttons.resume_pause_clicked)
+        save_btn.clicked.connect(save_button_clicked)
         save_btn.clicked.connect(buttons.save_button_clicked)
         discard_btn.clicked.connect(buttons.discard_button_clicked)
 
@@ -279,6 +316,13 @@ class Window(QWidget):
         listbox1.itemClicked.connect(database.getSelectedFolder)
         listbox1.itemClicked.connect(selectionChanged)
         listbox1.itemClicked.connect(ruleUnselected)
+
+        def change_rule():
+            self.condition_model.setFilter("Rule = '{}'".format(database.selected_rule))
+            self.condition_model.select()
+            self.condition_mapper.toFirst()
+        listbox2.itemClicked.connect(change_rule)
+        listbox2.itemClicked.connect(database.insertCondition)
 
         # Packing layouts into the main window which is in vertical layout...
 

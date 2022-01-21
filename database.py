@@ -112,3 +112,36 @@ def insertRule():
         print("R Records Inserted")
     else:
         print("R Records not Inserted")
+
+def condition_table(con):
+    print("i called")
+    try:
+        cursor = con.cursor()
+        cursor.execute("""
+        CREATE TABLE if not exists CONDITIONS(
+        Rule      TEXT,
+        Condition integer,
+        Operator  integer,
+        Size      double,
+        Extension TEXT,
+        Date      TEXT,
+        Unit      integer,
+        unique (Rule))
+        """)
+    except Error as er:
+        print(er)
+    finally:
+        con.commit()
+
+def insertCondition(value):
+    value = value.text()
+    con = sql_connection()
+    condition_table(con)
+    try:
+        cursor = con.cursor()
+        cursor.execute('INSERT INTO CONDITIONS(Rule) VALUES(?)', [value])
+        con.commit()
+        return True
+    except Error as er:
+        print(er.args)
+        return False
