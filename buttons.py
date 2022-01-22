@@ -14,6 +14,7 @@ a = dict()
 def add_list_items(name, path):
     a[name] = path
 
+
 def add_folder_clicked():
     global folder_inserted
     folder_path = QFileDialog.getExistingDirectory()
@@ -35,8 +36,11 @@ def add_folder_clicked():
 
 def resume_pause_clicked():
     conditions.conditions_applied()
+
+
 def save_button_clicked():
     database.insertRule()
+
 
 def discard_button_clicked():
     print("Hello u added me")

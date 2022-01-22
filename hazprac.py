@@ -108,7 +108,7 @@ class Window(QWidget):
 
         def update_date():
             value_date_edit = date_edit.date().toString('yyyyMMdd')
-            conditions.date_widget_value = int(value_date_edit)
+            conditions.date_edit_value = int(value_date_edit)
 
         date_edit.editingFinished.connect(update_date)
 
@@ -141,12 +141,23 @@ class Window(QWidget):
         for u in units:
             unit.addItem(u)
 
-        def get_value():
-            conditions.line_edit_value = size_value.text()
-        size_value.editingFinished.connect(get_value)
+        def on_unit_changed():
+            conditions.unit_value = unit.currentText()
+
+        unit.currentIndexChanged.connect(on_unit_changed)
+
+        def get_size_value():
+            conditions.size_value = size_value.text()
+
+        size_value.editingFinished.connect(get_size_value)
+
+        def get_ext_value():
+            conditions.ext_value = ext_value.text()
+
+        size_value.editingFinished.connect(get_ext_value)
 
         def onActivated():
-            conditions.combobox_value = condition.currentText()
+            conditions.condition_value = condition.currentText()
             if condition.currentText() == 'Extension':
                 ext_value.setHidden(False)
                 size_value.setHidden(True)
@@ -163,11 +174,10 @@ class Window(QWidget):
                 date_edit.setHidden(True)
                 ext_value.setHidden(True)
 
-
         condition.currentIndexChanged.connect(onActivated)
 
         def combobox1_onActivated():
-            conditions.combobox1_value = operator.currentText()
+            conditions.operator_value = operator.currentText()
 
         operator.activated.connect(combobox1_onActivated)
         # here int values are as row, column, row_span, column_span....
@@ -182,27 +192,27 @@ class Window(QWidget):
         panel3_grid.addWidget(ext_value, 1, 2)
 
         panel3_label_rule2 = QLabel('Do the following to the selected folder/files: ')
-        combobox2 = QComboBox()
-        combobox2.addItem('Copy')
-        combobox2.addItem('Move')
-        combobox2.addItem('Delete')
-        combobox2.addItem('Trash Bin')
-        combobox2.addItem('Rename')
+        actions = QComboBox()
+        actions.addItem('Copy')
+        actions.addItem('Move')
+        actions.addItem('Delete')
+        actions.addItem('Trash Bin')
+        actions.addItem('Rename')
         select_folder_btn = QPushButton("Select Folder")
 
         def select_folder_clicked():
             selected_path = QFileDialog.getExistingDirectory()
-            select_folder_btn.setText("to " + QDir(selected_path).dirName())
+            select_folder_btn.setText(QDir(selected_path).dirName())
             conditions.target_path = selected_path
 
         select_folder_btn.clicked.connect(select_folder_clicked)
 
-        line_edit2 = QLineEdit()
-        line_edit2.setHidden(True)
+        rename_value = QLineEdit()
+        rename_value.setHidden(True)
         panel3_grid.addWidget(panel3_label_rule2, 2, 0, 1, 3)
-        panel3_grid.addWidget(combobox2, 4, 0)
+        panel3_grid.addWidget(actions, 4, 0)
         panel3_grid.addWidget(select_folder_btn, 4, 1)
-        panel3_grid.addWidget(line_edit2, 4, 2)
+        panel3_grid.addWidget(rename_value, 4, 2)
         panel3_grid.setVerticalSpacing(20)
         # Prevent rows from stretching to take all available space
         panel3_grid.setRowStretch(panel3_grid.rowCount(), 1)
@@ -212,23 +222,25 @@ class Window(QWidget):
         self.condition_mapper.addMapping(ext_value, 4)
         self.condition_mapper.addMapping(date_edit, 5, b'date')
         self.condition_mapper.addMapping(unit, 6, b'currentIndex')
+        self.condition_mapper.addMapping(actions, 7, b'currentIndex')
+        self.condition_mapper.addMapping(select_folder_btn, 8, b'text')
+        self.condition_mapper.addMapping(rename_value, 9)
 
         def on_Activated():
-            conditions.combobox2_value = combobox2.currentText()
-            if combobox2.currentText() == 'Rename':
-                line_edit2.setHidden(False)
+            conditions.actions_value = actions.currentText()
+            if actions.currentText() == 'Rename':
+                rename_value.setHidden(False)
                 select_folder_btn.setHidden(True)
             else:
-                line_edit2.setHidden(True)
-                if combobox2.currentText() == 'Copy' or combobox2.currentText() == 'Move':
+                rename_value.setHidden(True)
+                if actions.currentText() == 'Copy' or actions.currentText() == 'Move':
                     select_folder_btn.setHidden(False)
-                elif combobox2.currentText() == 'Delete' or combobox2.currentText() == 'Trash Bin':
+                elif actions.currentText() == 'Delete' or actions.currentText() == 'Trash Bin':
                     select_folder_btn.setHidden(True)
 
-        combobox2.activated.connect(on_Activated)
+        actions.activated.connect(on_Activated)
 
         panel3_vbox.addLayout(panel3_grid)
-
 
         # bottom buttons...
 
@@ -265,7 +277,6 @@ class Window(QWidget):
             checkbox.setText(name)
             listbox2.addItem(checkbox)
 
-
         def rule_item_clicked(item):
             if item.isSelected():
                 line_edit.setText(item.text())
@@ -277,6 +288,7 @@ class Window(QWidget):
             i.setText(line_edit.text())
 
         line_edit.editingFinished.connect(update_rule_name)
+
         def save_button_clicked():
             self.condition_mapper.submit()
 
@@ -296,12 +308,12 @@ class Window(QWidget):
                 print(r)
                 add_rules(r)
 
-
         def ruleSelected(item):
             if item.isSelected():
                 frame.setLayout(panel3_vbox)
                 frame.show()
                 no_rule_label.hide()
+
         listbox2.itemClicked.connect(ruleSelected)
 
         def ruleUnselected():
@@ -321,6 +333,7 @@ class Window(QWidget):
             self.condition_model.setFilter("Rule = '{}'".format(database.selected_rule))
             self.condition_model.select()
             self.condition_mapper.toFirst()
+
         listbox2.itemClicked.connect(change_rule)
 
         # Packing layouts into the main window which is in vertical layout...

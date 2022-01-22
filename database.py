@@ -5,12 +5,17 @@ import Rules
 
 selected_rule = ''
 selected_folder = ''
+
+
 def getSelectedRule(rule):
     global selected_rule
     selected_rule = rule.text()
+
+
 def getSelectedFolder(folder):
     global selected_folder
     selected_folder = folder.text()
+
 
 def sql_connection():
     try:
@@ -91,7 +96,7 @@ def initRules():
     f_id = c.fetchone()
     f_id = str(f_id)[1:-2]
     rule_table(conn)
-    c.execute("""select Rule_Name from RULE where RULE.F_ID = ?""",[f_id])
+    c.execute("""select Rule_Name from RULE where RULE.F_ID = ?""", [f_id])
     for row in c.fetchall():
         row = str(row)[2:-3]
         Rules.rules_list.append(row)
@@ -113,25 +118,30 @@ def insertRule():
     else:
         print("R Records not Inserted")
 
+
 def condition_table(con):
     print("i called")
     try:
         cursor = con.cursor()
         cursor.execute("""
         CREATE TABLE if not exists CONDITIONS(
-        Rule      TEXT,
-        Condition integer,
-        Operator  integer,
-        Size      double,
-        Extension TEXT,
-        Date      TEXT,
-        Unit      integer,
+        Rule         TEXT,
+        Condition    integer,
+        Operator     integer,
+        Size         double,
+        Extension    TEXT,
+        Date         TEXT,
+        Unit         integer,
+        Actions      Text,
+        Target_Path  Text,
+        Rename       Text,
         unique (Rule))
         """)
     except Error as er:
         print(er)
     finally:
         con.commit()
+
 
 def insertCondition(value):
     value = value.text()
