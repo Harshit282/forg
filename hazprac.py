@@ -12,21 +12,20 @@ import database
 class Window(QWidget):
     def __init__(self):
         super().__init__()
+        self.setGeometry(100, 100, 800, 500)
+        self.setWindowTitle('File Organizer')
+        con = database.sql_connection()
+        database.condition_table(con)
         db = QSqlDatabase.addDatabase("QSQLITE")
         db.setDatabaseName("database.db")
         db.open()
-        self.setGeometry(100, 100, 800, 500)
-        self.setWindowTitle('File Organizer')
         self.condition_model = QSqlTableModel(self)
         self.condition_model.setTable("CONDITIONS")
-        self.condition_model.setEditStrategy(QSqlTableModel.OnManualSubmit)
+        self.condition_model.setEditStrategy(QSqlTableModel.OnRowChange)
         self.condition_mapper = QDataWidgetMapper(self)
         self.condition_mapper.setSubmitPolicy(QDataWidgetMapper.ManualSubmit)
         self.condition_mapper.setModel(self.condition_model)
         main_window_vbox = QVBoxLayout()
-        table = QTableView()
-        table.setModel(self.condition_model)
-        table.show()
         icon1_hbox = QHBoxLayout()
         icon2_hbox = QHBoxLayout()
         icon3_hbox = QHBoxLayout()
@@ -135,7 +134,6 @@ class Window(QWidget):
         update_combobox1(0)
 
         size_value = QLineEdit()
-        size_value.setHidden(False)
         size_value.setValidator(QDoubleValidator())
         ext_value = QLineEdit()
         ext_value.setHidden(True)
@@ -281,7 +279,6 @@ class Window(QWidget):
         line_edit.editingFinished.connect(update_rule_name)
         def save_button_clicked():
             self.condition_mapper.submit()
-            self.condition_model.submitAll()
 
         btn2.clicked.connect(update_rule_list)
         btn3.clicked.connect(buttons.resume_pause_clicked)
@@ -313,16 +310,18 @@ class Window(QWidget):
 
         # part of database system...
         listbox2.itemClicked.connect(database.getSelectedRule)
+        listbox2.itemClicked.connect(database.insertCondition)
         listbox1.itemClicked.connect(database.getSelectedFolder)
         listbox1.itemClicked.connect(selectionChanged)
         listbox1.itemClicked.connect(ruleUnselected)
 
         def change_rule():
+            print("rule changed")
+            print(database.selected_rule)
             self.condition_model.setFilter("Rule = '{}'".format(database.selected_rule))
             self.condition_model.select()
             self.condition_mapper.toFirst()
         listbox2.itemClicked.connect(change_rule)
-        listbox2.itemClicked.connect(database.insertCondition)
 
         # Packing layouts into the main window which is in vertical layout...
 
