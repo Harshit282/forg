@@ -132,7 +132,7 @@ def condition_table(con):
         Extension    TEXT,
         Date         TEXT,
         Unit         integer,
-        Actions      Text,
+        Actions      integer,
         Target_Path  Text,
         Rename       Text,
         unique (Rule))

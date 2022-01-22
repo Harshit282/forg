@@ -202,7 +202,7 @@ class Window(QWidget):
 
         def select_folder_clicked():
             selected_path = QFileDialog.getExistingDirectory()
-            select_folder_btn.setText(QDir(selected_path).dirName())
+            select_folder_btn.setText(selected_path)
             conditions.target_path = selected_path
 
         select_folder_btn.clicked.connect(select_folder_clicked)
@@ -238,7 +238,7 @@ class Window(QWidget):
                 elif actions.currentText() == 'Delete' or actions.currentText() == 'Trash Bin':
                     select_folder_btn.setHidden(True)
 
-        actions.activated.connect(on_Activated)
+        actions.currentIndexChanged.connect(on_Activated)
 
         panel3_vbox.addLayout(panel3_grid)
 

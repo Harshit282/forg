@@ -27,58 +27,61 @@ def human_size(n_bytes):
 
 
 def conditions_applied():
-    if combobox_value == 'Image Extension' or combobox_value == 'Audio Extension' or combobox_value == 'Video Extension':
-        for subdir, dirs, files in os.walk(original_path):
-            for file in files:
-                a = os.path.join(subdir, file)
-                if a.endswith(combobox1_value):
-                    run_task(combobox2_value, a)
+    print("executing")
+    if condition_value == 'Extension':
+        if operator_value == 'is':
+            for subdir, dirs, files in os.walk(original_path):
+                for file in files:
+                    a = os.path.join(subdir, file)
+                    if a.endswith(ext_value):
+                        run_task(actions_value, a)
 
-    if combobox_value == 'Date Added':
+    if condition_value == 'Date Added':
         for subdir, dirs, files in os.walk(original_path):
             for file in files:
                 a = os.path.join(subdir, file)
                 file_date = int(datetime.datetime.fromtimestamp(os.path.getctime(a)).strftime('%Y%m%d'))
                 # print(file_date)
                 # print(date_widget_value)
-                if combobox1_value == 'is':
+                if operator_value == 'is':
                     if date_widget_value == file_date:
-                        run_task(combobox2_value, a)
-                if combobox1_value == 'is before':
+                        run_task(actions_value, a)
+                if operator_value == 'is before':
                     if date_widget_value > file_date:
-                        run_task(combobox2_value, a)
-                if combobox1_value == 'is after':
+                        run_task(actions_value, a)
+                if operator_value == 'is after':
                     if date_widget_value < file_date:
-                        run_task(combobox2_value, a)
+                        run_task(actions_value, a)
 
-    if combobox_value == 'Empty Files':
+    if condition_value == 'Empty Files':
         for subdir, dirs, files in os.walk(original_path):
             for file in files:
                 a = os.path.join(subdir, file)
                 size_of_file = size(os.path.getsize(a))
                 if size_of_file == '0B':
-                    run_task(combobox2_value, a)
+                    run_task(actions_value, a)
 
-    if combobox_value == 'Old Files':
+    if condition_value == 'Old Files':
         pass
 
-    if combobox_value == 'Size':
+    if condition_value == 'Size':
         for subdir, dirs, files in os.walk(original_path):
             for file in files:
                 a = os.path.join(subdir, file)
                 size_of_file = human_size(os.path.getsize(a))
-                if size_of_file == line_edit_value + " " + combobox1_value:
-                    run_task(combobox2_value, a)
+                print(size_of_file)
+                if size_of_file == size_value + " " + operator_value:
+                    run_task(actions_value, a)
 
 
-def run_task(combobox_value, file_to_process):  # file_to process == a
-    if combobox_value == 'Copy':
+def run_task(condition_value, file_to_process):  # file_to process == a
+    if condition_value == 'Copy':
         Rules.copy(file_to_process, target_path)
-    elif combobox_value == 'Move':
+    elif condition_value == 'Move':
         Rules.move(file_to_process, target_path)
-    elif combobox_value == 'Delete':
+    elif condition_value == 'Delete':
         Rules.delete(file_to_process)
-    elif combobox_value == 'Trash Bin':
+    elif condition_value == 'Trash Bin':
         Rules.trash_bin(file_to_process)
-    elif combobox_value == 'Rename':
+    elif condition_value == 'Rename':
         Rules.rename(file_to_process)
