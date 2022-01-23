@@ -69,14 +69,22 @@ def conditions_applied():
                 for file in files:
                     a = os.path.join(subdir, file)
                     size_of_file = human_size(os.path.getsize(a))
-                    print(size_of_file)
                     if size_of_file == size_value + " " + unit_value:
-                        print("True")
                         run_task(actions_value, a)
         elif operator_value == 'greater than':
-            pass
+            for subdir, dirs, files in os.walk(original_path):
+                for file in files:
+                    a = os.path.join(subdir, file)
+                    size_of_file = human_size(os.path.getsize(a))
+                    if size_of_file > size_value + " " + unit_value:
+                        run_task(actions_value, a)
         elif operator_value == 'less than':
-            pass
+            for subdir, dirs, files in os.walk(original_path):
+                for file in files:
+                    a = os.path.join(subdir, file)
+                    size_of_file = human_size(os.path.getsize(a))
+                    if size_of_file < size_value + " " + unit_value:
+                        run_task(actions_value, a)
 
 
 def run_task(action_performed, file_to_process):  # file_to process == a
