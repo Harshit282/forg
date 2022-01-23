@@ -48,19 +48,20 @@ def conditions_applied():
                         run_task(actions_value, a)
 
     if condition_value == 'Date Added':
+        dt = datetime.datetime.strptime(date_edit_value, '%Y-%m-%d')
+        new_dt = int(dt.strftime('%Y%m%d'))
         for subdir, dirs, files in os.walk(original_path):
             for file in files:
                 a = os.path.join(subdir, file)
                 file_date = int(datetime.datetime.fromtimestamp(os.path.getctime(a)).strftime('%Y%m%d'))
                 if operator_value == 'is':
-                    if date_edit_value == file_date:
+                    if new_dt == file_date:
                         run_task(actions_value, a)
                 if operator_value == 'is before':
-                    if date_edit_value > file_date:
-                        print('true')
+                    if new_dt > file_date:
                         run_task(actions_value, a)
                 if operator_value == 'is after':
-                    if date_edit_value < file_date:
+                    if new_dt < file_date:
                         run_task(actions_value, a)
 
     if condition_value == 'Size':
