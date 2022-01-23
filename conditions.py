@@ -13,6 +13,7 @@ unit_value = ''
 actions_value = ''
 original_path = r''
 target_path = r''
+rename_value = r''
 # https://stackoverflow.com/a/14996816
 suffixes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
 
@@ -27,7 +28,6 @@ def human_size(n_bytes):
 
 
 def conditions_applied():
-    print("executing")
     if condition_value == 'Extension':
         if operator_value == 'is':
             for subdir, dirs, files in os.walk(original_path):
@@ -35,14 +35,15 @@ def conditions_applied():
                     a = os.path.join(subdir, file)
                     if a.endswith(ext_value):
                         run_task(actions_value, a)
+        elif operator_value == 'is not':
+            pass
 
     if condition_value == 'Date Added':
+        print("crashing")
         for subdir, dirs, files in os.walk(original_path):
             for file in files:
                 a = os.path.join(subdir, file)
                 file_date = int(datetime.datetime.fromtimestamp(os.path.getctime(a)).strftime('%Y%m%d'))
-                # print(file_date)
-                # print(date_widget_value)
                 if operator_value == 'is':
                     if date_widget_value == file_date:
                         run_task(actions_value, a)
@@ -53,35 +54,24 @@ def conditions_applied():
                     if date_widget_value < file_date:
                         run_task(actions_value, a)
 
-    if condition_value == 'Empty Files':
-        for subdir, dirs, files in os.walk(original_path):
-            for file in files:
-                a = os.path.join(subdir, file)
-                size_of_file = size(os.path.getsize(a))
-                if size_of_file == '0B':
-                    run_task(actions_value, a)
-
-    if condition_value == 'Old Files':
-        pass
-
     if condition_value == 'Size':
-        for subdir, dirs, files in os.walk(original_path):
-            for file in files:
-                a = os.path.join(subdir, file)
-                size_of_file = human_size(os.path.getsize(a))
-                print(size_of_file)
-                if size_of_file == size_value + " " + operator_value:
-                    run_task(actions_value, a)
+        if operator_value == 'is':
+            for subdir, dirs, files in os.walk(original_path):
+                for file in files:
+                    a = os.path.join(subdir, file)
+                    size_of_file = human_size(os.path.getsize(a))
+                    if size_of_file == size_value + " " + operator_value:
+                        run_task(actions_value, a)
 
 
-def run_task(condition_value, file_to_process):  # file_to process == a
-    if condition_value == 'Copy':
+def run_task(actions_value, file_to_process):  # file_to process == a
+    if actions_value == 'Copy':
         Rules.copy(file_to_process, target_path)
-    elif condition_value == 'Move':
+    elif actions_value == 'Move':
         Rules.move(file_to_process, target_path)
-    elif condition_value == 'Delete':
+    elif actions_value == 'Delete':
         Rules.delete(file_to_process)
-    elif condition_value == 'Trash Bin':
+    elif actions_value == 'Trash Bin':
         Rules.trash_bin(file_to_process)
-    elif condition_value == 'Rename':
+    elif actions_value == 'Rename':
         Rules.rename(file_to_process)

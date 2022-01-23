@@ -108,7 +108,7 @@ class Window(QWidget):
 
         def update_date():
             value_date_edit = date_edit.date().toString('yyyyMMdd')
-            conditions.date_edit_value = int(value_date_edit)
+            # conditions.date_edit_value = int(value_date_edit)
 
         date_edit.editingFinished.connect(update_date)
 
@@ -142,22 +142,25 @@ class Window(QWidget):
             unit.addItem(u)
 
         def on_unit_changed():
-            conditions.unit_value = unit.currentText()
+            # conditions.unit_value = unit.currentText()
+            pass
 
         unit.currentIndexChanged.connect(on_unit_changed)
 
         def get_size_value():
-            conditions.size_value = size_value.text()
+            # conditions.size_value = size_value.text()
+            pass
 
         size_value.editingFinished.connect(get_size_value)
 
         def get_ext_value():
-            conditions.ext_value = ext_value.text()
+            # conditions.ext_value = ext_value.text()
+            pass
 
         size_value.editingFinished.connect(get_ext_value)
 
         def onActivated():
-            conditions.condition_value = condition.currentText()
+            # conditions.condition_value = condition.currentText()
             if condition.currentText() == 'Extension':
                 ext_value.setHidden(False)
                 size_value.setHidden(True)
@@ -177,7 +180,8 @@ class Window(QWidget):
         condition.currentIndexChanged.connect(onActivated)
 
         def combobox1_onActivated():
-            conditions.operator_value = operator.currentText()
+            # conditions.operator_value = operator.currentText()
+            pass
 
         operator.activated.connect(combobox1_onActivated)
         # here int values are as row, column, row_span, column_span....
@@ -203,7 +207,7 @@ class Window(QWidget):
         def select_folder_clicked():
             selected_path = QFileDialog.getExistingDirectory()
             select_folder_btn.setText(selected_path)
-            conditions.target_path = selected_path
+            # conditions.target_path = selected_path
 
         select_folder_btn.clicked.connect(select_folder_clicked)
 
@@ -227,7 +231,7 @@ class Window(QWidget):
         self.condition_mapper.addMapping(rename_value, 9)
 
         def on_Activated():
-            conditions.actions_value = actions.currentText()
+            # conditions.actions_value = actions.currentText()
             if actions.currentText() == 'Rename':
                 rename_value.setHidden(False)
                 select_folder_btn.setHidden(True)
@@ -300,7 +304,7 @@ class Window(QWidget):
 
         def selectionChanged(item):
             root_dir = buttons.a.get(item.text())
-            conditions.original_path = root_dir
+            # conditions.original_path = root_dir
             listbox2.clear()
             Rules.rules_list.clear()
             database.initRules()

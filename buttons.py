@@ -40,6 +40,7 @@ def resume_pause_clicked():
 
 def save_button_clicked():
     database.insertRule()
+    database.retrieve_values()
 
 
 def discard_button_clicked():

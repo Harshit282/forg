@@ -2,6 +2,7 @@ import sqlite3
 from sqlite3 import Error
 import buttons
 import Rules
+import conditions
 
 selected_rule = ''
 selected_folder = ''
@@ -155,3 +156,31 @@ def insertCondition(value):
     except Error as er:
         print(er.args)
         return False
+
+
+def retrieve_values():
+    con = sql_connection()
+    list = []
+    try:
+        cursor = con.cursor()
+        cursor.execute('SELECT * FROM CONDITIONS WHERE Rule = ?', [selected_rule])
+        for row in cursor.fetchall():
+            row = str(row)[2:-3]
+            list.append(row)
+        list = list[0].split()
+        conditions.condition_value = list[1]
+        conditions.operator_value = list[2]
+        conditions.size_value = list[3]
+        conditions.ext_value = list[4]
+        conditions.date_edit_value = list[5]
+        conditions.unit_value = list[6]
+        conditions.actions_value = list[7]
+        conditions.target_path = list[8]
+        conditions.rename_value = list[9]
+        print(conditions.condition_value, conditions.operator_value, conditions.size_value, conditions.ext_value,
+              conditions.date_edit_value, conditions.unit_value, conditions.actions_value, conditions.rename_value,
+              conditions.target_path)
+    except Error as er:
+        print(er)
+    finally:
+        con.commit()
