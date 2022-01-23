@@ -51,10 +51,14 @@ class Window(QWidget):
         btn2.setToolTip('Add Rule')
         btn3.setIcon(QIcon('icons/pause.png'))
         btn3.setToolTip('Pause')
+        remove_folder_btn = QPushButton()
+        remove_folder_btn.setIcon(QIcon('icons/remove icon.png'))
+        remove_folder_btn.setToolTip('Remove Folder')
 
         # Panel 1 starts from here...
 
         icon1_hbox.addWidget(btn1)
+        icon1_hbox.addWidget(remove_folder_btn)
         icon1_hbox.addStretch()
         folders_label = QLabel("Folders")
         listbox1 = QListWidget()
@@ -210,6 +214,7 @@ class Window(QWidget):
             # conditions.target_path = selected_path
 
         select_folder_btn.clicked.connect(select_folder_clicked)
+        remove_folder_btn.clicked.connect(buttons.remove_folder_button_clicked)
 
         rename_value = QLineEdit()
         rename_value.setHidden(True)
@@ -250,9 +255,11 @@ class Window(QWidget):
 
         save_btn = QPushButton("Save")
         discard_btn = QPushButton("Discard")
+        remove_rule_btn = QPushButton("Remove Rule")
         btm_hbox.addStretch()
         btm_hbox.addWidget(save_btn)
         btm_hbox.addWidget(discard_btn)
+        btm_hbox.addWidget(remove_rule_btn)
         panel3_vbox.addLayout(btm_hbox)
 
         # Buttons/Icons clicked actions are defined here...
@@ -304,7 +311,7 @@ class Window(QWidget):
         btn3.clicked.connect(buttons.resume_pause_clicked)
         save_btn.clicked.connect(save_button_clicked)
         save_btn.clicked.connect(buttons.save_button_clicked)
-        discard_btn.clicked.connect(buttons.discard_button_clicked)
+        remove_rule_btn.clicked.connect(buttons.remove_rule_button_clicked)
 
         def selectionChanged(item):
             root_dir = buttons.a.get(item.text())

@@ -44,5 +44,9 @@ def save_button_clicked():
     database.insertRule()
 
 
-def discard_button_clicked():
-    pass
+def remove_folder_button_clicked():
+    database.remove_folder()
+
+
+def remove_rule_button_clicked():
+    database.remove_rule()

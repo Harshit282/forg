@@ -6,7 +6,7 @@ import conditions
 
 selected_rule = ''
 selected_folder = ''
-list = []
+retrieved_list = []
 
 
 def getSelectedRule(rule):
@@ -122,7 +122,6 @@ def insertRule():
 
 
 def condition_table(con):
-    print("i called")
     try:
         cursor = con.cursor()
         cursor.execute("""
@@ -161,25 +160,51 @@ def insertCondition(value):
 
 def retrieve_values():
     con = sql_connection()
-    global list
+    global retrieved_list
     try:
         cursor = con.cursor()
         cursor.execute('SELECT * FROM CONDITIONS WHERE Rule = ?', [selected_rule])
         for row in cursor.fetchall():
             row = str(row)[1:-1]
-            list.clear()
-            list.append(row)
-        list = list[0].split(",")
-        conditions.rule_name = list[0][1:-1]
-        conditions.condition_value = list[1][2:-1]
-        conditions.operator_value = list[2][2:-1]
-        conditions.size_value = float(list[3][1:])
-        conditions.ext_value = list[4][2:-1]
-        conditions.date_edit_value = list[5][2:-1]
-        conditions.unit_value = list[6][2:-1]
-        conditions.actions_value = list[7][2:-1]
-        conditions.target_path = list[8][2:-1]
-        conditions.rename_value = list[9][2:-1]
+            retrieved_list.clear()
+            retrieved_list.append(row)
+        retrieved_list = retrieved_list[0].split(",")
+        conditions.rule_name = retrieved_list[0][1:-1]
+        conditions.condition_value = retrieved_list[1][2:-1]
+        conditions.operator_value = retrieved_list[2][2:-1]
+        conditions.size_value = float(retrieved_list[3][1:])
+        conditions.ext_value = retrieved_list[4][2:-1]
+        conditions.date_edit_value = retrieved_list[5][2:-1]
+        conditions.unit_value = retrieved_list[6][2:-1]
+        conditions.actions_value = retrieved_list[7][2:-1]
+        conditions.target_path = retrieved_list[8][2:-1]
+        conditions.rename_value = retrieved_list[9][2:-1]
+    except Error as er:
+        print(er)
+    finally:
+        con.commit()
+
+
+def remove_folder():
+    con = sql_connection()
+    try:
+        cursor = con.cursor()
+        cursor.execute('DELETE FROM CONDITIONS WHERE Rule IN (SELECT Rule_Name FROM RULE WHERE F_ID IN (SELECT ID '
+                       'FROM FOLDER WHERE Folder_Name = ?))', [selected_folder])
+        cursor.execute('DELETE FROM RULE WHERE F_ID IN (SELECT ID FROM FOLDER WHERE Folder_Name = ?)', [selected_folder])
+        cursor.execute('DELETE FROM FOLDER WHERE Folder_Name = ?', [selected_folder])
+    except Error as er:
+        print(er)
+    finally:
+        con.commit()
+
+
+def remove_rule():
+    con = sql_connection()
+    try:
+        cursor = con.cursor()
+        cursor.execute('DELETE FROM CONDITIONS WHERE Rule = ?', [selected_rule])
+        cursor.execute('DELETE FROM RULE WHERE Rule_Name = ?', [selected_rule])
     except Error as er:
         print(er)
     finally:
