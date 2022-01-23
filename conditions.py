@@ -26,7 +26,8 @@ def human_size(n_bytes):
         n_bytes /= 1000.
         i += 1
     f = ('%.1f' % n_bytes).rstrip('0').rstrip('.')
-    return '%s %s' % (f, suffixes[i])
+    # return '%s %s' % (f, suffixes[i])
+    return f, suffixes[i]
 
 
 def conditions_applied():
@@ -69,22 +70,22 @@ def conditions_applied():
             for subdir, dirs, files in os.walk(original_path):
                 for file in files:
                     a = os.path.join(subdir, file)
-                    size_of_file = human_size(os.path.getsize(a))
-                    if size_of_file == size_value + " " + unit_value:
+                    size_of_file, unit_of_file  = human_size(os.path.getsize(a))
+                    if size_of_file == size_value and unit_of_file == unit_value:
                         run_task(actions_value, a)
         elif operator_value == 'greater than':
             for subdir, dirs, files in os.walk(original_path):
                 for file in files:
                     a = os.path.join(subdir, file)
-                    size_of_file = human_size(os.path.getsize(a))
-                    if size_of_file > size_value + " " + unit_value:
+                    size_of_file, unit_of_file  = human_size(os.path.getsize(a))
+                    if size_of_file > size_value and unit_of_file == unit_value:
                         run_task(actions_value, a)
         elif operator_value == 'less than':
             for subdir, dirs, files in os.walk(original_path):
                 for file in files:
                     a = os.path.join(subdir, file)
-                    size_of_file = human_size(os.path.getsize(a))
-                    if size_of_file < size_value + " " + unit_value:
+                    size_of_file, unit_of_file  = human_size(os.path.getsize(a))
+                    if size_of_file < size_value and unit_of_file == unit_value:
                         run_task(actions_value, a)
 
 
