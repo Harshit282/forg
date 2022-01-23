@@ -304,7 +304,7 @@ class Window(QWidget):
 
         def selectionChanged(item):
             root_dir = buttons.a.get(item.text())
-            # conditions.original_path = root_dir
+            conditions.original_path = root_dir
             listbox2.clear()
             Rules.rules_list.clear()
             database.initRules()

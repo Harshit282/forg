@@ -35,12 +35,12 @@ def add_folder_clicked():
 
 
 def resume_pause_clicked():
+    database.retrieve_values()
     conditions.conditions_applied()
 
 
 def save_button_clicked():
     database.insertRule()
-    database.retrieve_values()
 
 
 def discard_button_clicked():
