@@ -216,13 +216,13 @@ class Window(QWidget):
         panel3_grid.setVerticalSpacing(20)
         # Prevent rows from stretching to take all available space
         panel3_grid.setRowStretch(panel3_grid.rowCount(), 1)
-        self.condition_mapper.addMapping(condition, 1, b'currentIndex')
-        self.condition_mapper.addMapping(operator, 2, b'currentIndex')
+        self.condition_mapper.addMapping(condition, 1, b'currentText')
+        self.condition_mapper.addMapping(operator, 2, b'currentText')
         self.condition_mapper.addMapping(size_value, 3)
         self.condition_mapper.addMapping(ext_value, 4)
         self.condition_mapper.addMapping(date_edit, 5, b'date')
-        self.condition_mapper.addMapping(unit, 6, b'currentIndex')
-        self.condition_mapper.addMapping(actions, 7, b'currentIndex')
+        self.condition_mapper.addMapping(unit, 6, b'currentText')
+        self.condition_mapper.addMapping(actions, 7, b'currentText')
         self.condition_mapper.addMapping(select_folder_btn, 8, b'text')
         self.condition_mapper.addMapping(rename_value, 9)
 

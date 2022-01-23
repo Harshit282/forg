@@ -125,14 +125,14 @@ def condition_table(con):
         cursor = con.cursor()
         cursor.execute("""
         CREATE TABLE if not exists CONDITIONS(
-        Rule         TEXT,
-        Condition    integer,
-        Operator     integer,
+        Rule         Text,
+        Condition    Text,
+        Operator     Text,
         Size         double,
-        Extension    TEXT,
-        Date         TEXT,
-        Unit         integer,
-        Actions      integer,
+        Extension    Text,
+        Date         Text,
+        Unit         Text,
+        Actions      Text,
         Target_Path  Text,
         Rename       Text,
         unique (Rule))
