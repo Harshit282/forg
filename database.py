@@ -2,7 +2,7 @@ import sqlite3
 from sqlite3 import Error
 import buttons
 import Rules
-# import conditions
+import conditions
 
 selected_rule = ''
 selected_folder = ''
@@ -166,18 +166,20 @@ def retrieve_values():
         cursor = con.cursor()
         cursor.execute('SELECT * FROM CONDITIONS WHERE Rule = ?', [selected_rule])
         for row in cursor.fetchall():
-            row = str(row)[2:-3]
+            row = str(row)[1:-1]
+            list.clear()
             list.append(row)
-        list = list[0].split()
-        # conditions.condition_value = list[1]
-        # conditions.operator_value = list[2]
-        # conditions.size_value = list[3]
-        # conditions.ext_value = list[4]
-        # conditions.date_edit_value = list[5]
-        # conditions.unit_value = list[6]
-        # conditions.actions_value = list[7]
-        # conditions.target_path = list[8]
-        # conditions.rename_value = list[9]
+        list = list[0].split(",")
+        conditions.rule_name = list[0][1:-1]
+        conditions.condition_value = list[1][2:-1]
+        conditions.operator_value = list[2][2:-1]
+        conditions.size_value = list[3][1:]
+        conditions.ext_value = list[4][2:-1]
+        conditions.date_edit_value = list[5][2:-1]
+        conditions.unit_value = list[6][2:-1]
+        conditions.actions_value = list[7][2:-1]
+        conditions.target_path = list[8][2:-1]
+        conditions.rename_value = list[9][2:-1]
     except Error as er:
         print(er)
     finally:

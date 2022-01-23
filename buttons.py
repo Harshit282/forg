@@ -35,6 +35,7 @@ def add_folder_clicked():
 
 
 def resume_pause_clicked():
+    save_button_clicked()
     database.retrieve_values()
     conditions.conditions_applied()
 
@@ -44,4 +45,4 @@ def save_button_clicked():
 
 
 def discard_button_clicked():
-    print("Hello u added me")
+    pass

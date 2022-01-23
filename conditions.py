@@ -3,7 +3,6 @@ import buttons
 import os
 import Rules
 import datetime
-import database
 
 condition_value = ''  # combobox_value
 operator_value = ''   # combobox1_value
@@ -15,6 +14,8 @@ actions_value = ''
 original_path = r''
 target_path = r''
 rename_value = r''
+
+
 # https://stackoverflow.com/a/14996816
 suffixes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
 
@@ -29,24 +30,24 @@ def human_size(n_bytes):
 
 
 def conditions_applied():
-    global operator_value, actions_value
-    condition_value = str(database.list[1])[1:-2]
+    global operator_value, actions_value, condition_value, date_edit_value, unit_value, size_value, ext_value
     if condition_value == 'Extension':
-        operator_value = str(database.list[2])[1:-2]
         if operator_value == 'is':
-            actions_value = str(database.list[7])[1:-2]
-            ext_value = str(database.list[4])[1:-2]
             for subdir, dirs, files in os.walk(original_path):
                 for file in files:
                     a = os.path.join(subdir, file)
                     if a.endswith(ext_value):
                         run_task(actions_value, a)
         elif operator_value == 'is not':
-            pass
+            for subdir, dirs, files in os.walk(original_path):
+                for file in files:
+                    a = os.path.join(subdir, file)
+                    if a.endswith(ext_value):
+                        pass
+                    else:
+                        run_task(actions_value, a)
 
     if condition_value == 'Date Added':
-        operator_value = str(database.list[2])[1:-2]
-        date_edit_value = str(database.list[5])[1:-2]
         for subdir, dirs, files in os.walk(original_path):
             for file in files:
                 a = os.path.join(subdir, file)
@@ -56,21 +57,21 @@ def conditions_applied():
                         run_task(actions_value, a)
                 if operator_value == 'is before':
                     if date_edit_value > file_date:
+                        print('true')
                         run_task(actions_value, a)
                 if operator_value == 'is after':
                     if date_edit_value < file_date:
                         run_task(actions_value, a)
 
     if condition_value == 'Size':
-        operator_value = str(database.list[2])[1:-2]
-        size_value = str(database.list[3])[1:-2]
-        unit_value = str(database.list[6])[1:-2]
         if operator_value == 'is':
             for subdir, dirs, files in os.walk(original_path):
                 for file in files:
                     a = os.path.join(subdir, file)
                     size_of_file = human_size(os.path.getsize(a))
+                    print(size_of_file)
                     if size_of_file == size_value + " " + unit_value:
+                        print("True")
                         run_task(actions_value, a)
         elif operator_value == 'greater than':
             pass
@@ -78,15 +79,15 @@ def conditions_applied():
             pass
 
 
-def run_task(actions_value, file_to_process):  # file_to process == a
-    target_path = str(database.list[8])[1:-2]
-    if actions_value == 'Copy':
+def run_task(action_performed, file_to_process):  # file_to process == a
+    global target_path
+    if action_performed == 'Copy':
         Rules.copy(file_to_process, target_path)
-    elif actions_value == 'Move':
+    elif action_performed == 'Move':
         Rules.move(file_to_process, target_path)
-    elif actions_value == 'Delete':
+    elif action_performed == 'Delete':
         Rules.delete(file_to_process)
-    elif actions_value == 'Trash Bin':
+    elif action_performed == 'Trash Bin':
         Rules.trash_bin(file_to_process)
-    elif actions_value == 'Rename':
+    elif action_performed == 'Rename':
         Rules.rename(file_to_process)
