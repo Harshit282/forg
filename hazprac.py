@@ -296,6 +296,10 @@ class Window(QWidget):
         def save_button_clicked():
             self.condition_mapper.submit()
 
+        def discard_button_clicked():
+            self.condition_mapper.revert()
+        discard_btn.clicked.connect(discard_button_clicked)
+
         btn2.clicked.connect(update_rule_list)
         btn3.clicked.connect(buttons.resume_pause_clicked)
         save_btn.clicked.connect(save_button_clicked)
