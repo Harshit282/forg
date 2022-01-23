@@ -6,7 +6,7 @@ import datetime
 
 condition_value = ''  # combobox_value
 operator_value = ''   # combobox1_value
-size_value = ''
+size_value = 0.0
 ext_value = ''
 date_edit_value = 0
 unit_value = ''
@@ -27,7 +27,7 @@ def human_size(n_bytes):
         i += 1
     f = ('%.1f' % n_bytes).rstrip('0').rstrip('.')
     # return '%s %s' % (f, suffixes[i])
-    return f, suffixes[i]
+    return float(f), suffixes[i]
 
 
 def conditions_applied():

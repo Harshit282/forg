@@ -173,7 +173,7 @@ def retrieve_values():
         conditions.rule_name = list[0][1:-1]
         conditions.condition_value = list[1][2:-1]
         conditions.operator_value = list[2][2:-1]
-        conditions.size_value = list[3][1:]
+        conditions.size_value = float(list[3][1:])
         conditions.ext_value = list[4][2:-1]
         conditions.date_edit_value = list[5][2:-1]
         conditions.unit_value = list[6][2:-1]
