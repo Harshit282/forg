@@ -6,15 +6,6 @@ import Rules
 import conditions
 import database
 
-folder_inserted = False
-
-a = dict()
-
-
-def add_list_items(name, path):
-    a[name] = path
-
-
 def add_folder_clicked():
     global folder_inserted
     folder_path = QFileDialog.getExistingDirectory()
@@ -27,8 +18,6 @@ def add_folder_clicked():
         database.folder_table(conn)
         values = (selected_folder, str(folder_path))
         if database.sql_insert(conn, values):
-            add_list_items(selected_folder, folder.path())
-            folder_inserted = True
             print("F Records Inserted")
         else:
             print("F Records not Inserted")

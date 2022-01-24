@@ -61,13 +61,16 @@ class Window(QWidget):
         icon1_hbox.addWidget(remove_folder_btn)
         icon1_hbox.addStretch()
         folders_label = QLabel("Folders")
-        listbox1 = QListWidget()
+        self.folder_model = QSqlTableModel(self)
+        self.folder_model.setTable("FOLDER")
+        self.folder_model.select()
+        folder_listview = QListView()
+        folder_listview.setModel(self.folder_model)
+        folder_listview.setModelColumn(1)
+        folder_listview.setEditTriggers(QAbstractItemView.NoEditTriggers)
         panel1_vbox.addLayout(icon1_hbox)
         panel1_vbox.addWidget(folders_label)
-        panel1_vbox.addWidget(listbox1)
-        database.init_folder_list()
-        for k in buttons.a.keys():
-            listbox1.addItem(k)
+        panel1_vbox.addWidget(folder_listview)
 
         # Panel 2 starts from here...
 
@@ -216,6 +219,7 @@ class Window(QWidget):
         select_folder_btn.clicked.connect(select_folder_clicked)
         remove_folder_btn.clicked.connect(buttons.remove_folder_button_clicked)
 
+
         rename_value = QLineEdit()
         rename_value.setHidden(True)
         panel3_grid.addWidget(panel3_label_rule2, 2, 0, 1, 3)
@@ -264,13 +268,10 @@ class Window(QWidget):
 
         # Buttons/Icons clicked actions are defined here...
         # They have been imported from buttons python file...
-        def update_folder_list():
-            if buttons.folder_inserted:
-                listbox1.addItem(list(buttons.a)[-1])
-                buttons.folder_inserted = False
-
         btn1.clicked.connect(buttons.add_folder_clicked)
-        btn1.clicked.connect(update_folder_list)
+        def update_folder_model():
+            self.folder_model.select()
+        btn1.clicked.connect(update_folder_model)
 
         def update_rule_list():
             checkbox = QListWidgetItem()
@@ -311,10 +312,11 @@ class Window(QWidget):
         btn3.clicked.connect(buttons.resume_pause_clicked)
         save_btn.clicked.connect(save_button_clicked)
         save_btn.clicked.connect(buttons.save_button_clicked)
+        remove_folder_btn.clicked.connect(update_folder_model)
         remove_rule_btn.clicked.connect(buttons.remove_rule_button_clicked)
 
         def selectionChanged(item):
-            root_dir = buttons.a.get(item.text())
+            root_dir = item.data()
             conditions.original_path = root_dir
             listbox2.clear()
             Rules.rules_list.clear()
@@ -338,9 +340,9 @@ class Window(QWidget):
         # part of database system...
         listbox2.itemClicked.connect(database.getSelectedRule)
         listbox2.itemClicked.connect(database.insertCondition)
-        listbox1.itemClicked.connect(database.getSelectedFolder)
-        listbox1.itemClicked.connect(selectionChanged)
-        listbox1.itemClicked.connect(ruleUnselected)
+        folder_listview.clicked.connect(database.getSelectedFolder)
+        folder_listview.clicked.connect(selectionChanged)
+        folder_listview.clicked.connect(ruleUnselected)
 
         def change_rule():
             print("rule changed")

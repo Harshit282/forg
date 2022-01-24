@@ -16,7 +16,7 @@ def getSelectedRule(rule):
 
 def getSelectedFolder(folder):
     global selected_folder
-    selected_folder = folder.text()
+    selected_folder = folder.data()
 
 
 def sql_connection():
@@ -74,21 +74,6 @@ def rule_insert(con, values):
     except Error as er:
         print(er.args)
         return False
-
-
-def init_folder_list():
-    conn = sql_connection()
-    folder_table(conn)
-    c = conn.cursor()
-    c.execute("""select Folder_Name from FOLDER""")
-    for row in c.fetchall():
-        # A list item is returned, so remove ' and , from it
-        row = str(row)[2:-3]
-        c.execute('select Folder_Path from FOLDER where Folder_Name = ?', [row])
-        path = c.fetchone()
-        path = str(path)[2:-3]
-        buttons.add_list_items(row, path)
-
 
 def initRules():
     conn = sql_connection()
