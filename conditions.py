@@ -20,19 +20,19 @@ suffixes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
 
 
 def human_size(n_bytes):
+    size = int(n_bytes)
     i = 0
-    while n_bytes >= 1000 and i < len(suffixes) - 1:
-        n_bytes /= 1000.
-        i += 1
-    f = ('%.1f' % n_bytes).rstrip('0').rstrip('.')
-    # return '%s %s' % (f, suffixes[i])
-    return float(f), suffixes[i]
+    for i in range(len(suffixes)):
+        if unit_value == suffixes[i]:
+            break
+    size *= (1024 ** int(i))
+    return size
 
 
 def conditions_applied():
     global operator_value, actions_value, condition_value, date_edit_value, unit_value, size_value, ext_value
-    print(rule_name, condition_value, operator_value, size_value, ext_value, date_edit_value, unit_value, actions_value,
-          original_path, target_path, rename_value)
+    # print(rule_name, condition_value, operator_value, size_value, ext_value, date_edit_value, unit_value,
+    # actions_value, original_path, target_path, rename_value)
     if condition_value == 'Extension':
         if operator_value == 'is':
             for subdir, dirs, files in os.walk(original_path):
@@ -72,24 +72,37 @@ def conditions_applied():
             for subdir, dirs, files in os.walk(original_path):
                 for file in files:
                     a = os.path.join(subdir, file)
-                    size_of_file, unit_of_file = human_size(os.path.getsize(a))
-                    if size_of_file == size_value == 0:
-                        run_task(actions_value, a)
-                    elif size_of_file == size_value and unit_of_file == unit_value:
+                    size_of_file = os.path.getsize(a)
+                    i = 0
+                    while size_of_file >= 1024:
+                        size_of_file = size_of_file // 1024
+                        i += 1
+                    size_of_file *= (1024 ** int(i))
+                    if size_of_file == human_size(size_value):
                         run_task(actions_value, a)
         elif operator_value == 'greater than':
             for subdir, dirs, files in os.walk(original_path):
                 for file in files:
                     a = os.path.join(subdir, file)
-                    size_of_file, unit_of_file = human_size(os.path.getsize(a))
-                    if size_of_file > size_value and unit_of_file == unit_value:
+                    size_of_file = os.path.getsize(a)
+                    i = 0
+                    while size_of_file >= 1024:
+                        size_of_file = size_of_file // 1024
+                        i += 1
+                    size_of_file *= (1024 ** int(i))
+                    if size_of_file > human_size(size_value):
                         run_task(actions_value, a)
         elif operator_value == 'less than':
             for subdir, dirs, files in os.walk(original_path):
                 for file in files:
                     a = os.path.join(subdir, file)
-                    size_of_file, unit_of_file = human_size(os.path.getsize(a))
-                    if size_of_file < size_value and unit_of_file == unit_value:
+                    size_of_file = os.path.getsize(a)
+                    i = 0
+                    while size_of_file >= 1024:
+                        size_of_file = size_of_file // 1024
+                        i += 1
+                    size_of_file *= (1024 ** int(i))
+                    if size_of_file < human_size(size_value):
                         run_task(actions_value, a)
 
 
