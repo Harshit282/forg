@@ -2,6 +2,7 @@ import os
 import Rules
 import datetime
 
+rule_name = ''
 condition_value = ''  # combobox_value
 operator_value = ''   # combobox1_value
 size_value = ''
@@ -30,6 +31,8 @@ def human_size(n_bytes):
 
 def conditions_applied():
     global operator_value, actions_value, condition_value, date_edit_value, unit_value, size_value, ext_value
+    print(rule_name, condition_value, operator_value, size_value, ext_value, date_edit_value, unit_value, actions_value,
+          original_path, target_path, rename_value)
     if condition_value == 'Extension':
         if operator_value == 'is':
             for subdir, dirs, files in os.walk(original_path):

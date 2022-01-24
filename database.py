@@ -121,6 +121,18 @@ def insertCondition(value):
         return False
 
 
+def retrieve_folder_path():
+    con = sql_connection()
+    try:
+        cursor = con.cursor()
+        cursor.execute('SELECT Folder_Path FROM FOLDER WHERE Folder_Name = ?', [selected_folder])
+        conditions.original_path = str(cursor.fetchone())[3:-4]
+    except Error as er:
+        print(er)
+    finally:
+        con.commit()
+
+
 def retrieve_values():
     con = sql_connection()
     global retrieved_list
@@ -142,6 +154,9 @@ def retrieve_values():
         conditions.actions_value = retrieved_list[7][2:-1]
         conditions.target_path = retrieved_list[8][2:-1]
         conditions.rename_value = retrieved_list[9][2:-1]
+        # print(conditions.rule_name, conditions.condition_value, conditions.operator_value, conditions.size_value,
+        #       conditions.ext_value, conditions.date_edit_value, conditions.unit_value, conditions.actions_value,
+        #       conditions.target_path, conditions.rename_value)
     except Error as er:
         print(er)
     finally:

@@ -278,8 +278,6 @@ class Window(QWidget):
         remove_folder_btn.clicked.connect(update_folder_model)
 
         def selectionChanged(item):
-            root_dir = item.data()
-            conditions.original_path = root_dir
             # Enable add rule button now since a
             # folder is selected
             add_rule_button.setEnabled(True)
