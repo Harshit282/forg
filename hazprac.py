@@ -286,8 +286,8 @@ class Window(QWidget):
         rule_listview.selectionModel().currentChanged.connect(rule_item_clicked)
 
         def update_rule_name():
-            i = rule_listview.selectedItems()[0]
-            i.setText(line_edit.text())
+            #TODO
+            pass
 
         line_edit.editingFinished.connect(update_rule_name)
 
