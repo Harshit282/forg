@@ -67,7 +67,7 @@ class Window(QWidget):
         folder_listview = QListView()
         folder_listview.setModel(self.folder_model)
         folder_listview.setModelColumn(1)
-        folder_listview.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        folder_listview.setEditTriggers(QListView.NoEditTriggers)
         panel1_vbox.addLayout(icon1_hbox)
         panel1_vbox.addWidget(folders_label)
         panel1_vbox.addWidget(folder_listview)
@@ -329,6 +329,8 @@ class Window(QWidget):
         remove_rule_btn.clicked.connect(buttons.remove_rule_button_clicked)
         remove_rule_btn.clicked.connect(init_rules)
         remove_rule_btn.clicked.connect(ruleUnselected)
+        remove_folder_btn.clicked.connect(init_rules)
+        remove_folder_btn.clicked.connect(ruleUnselected)
 
         # Packing layouts into the main window which is in vertical layout...
 
