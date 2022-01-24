@@ -1,6 +1,7 @@
 from PyQt5.QtCore import *
 from PyQt5.QtSql import *
 
+
 class RuleTableModel(QSqlTableModel):
 
     def flags(self, index):
@@ -13,7 +14,7 @@ class RuleTableModel(QSqlTableModel):
 
     def data(self, index, role=Qt.DisplayRole):
         if role == Qt.CheckStateRole and (
-            self.flags(index) & Qt.ItemIsUserCheckable != Qt.NoItemFlags
+                self.flags(index) & Qt.ItemIsUserCheckable != Qt.NoItemFlags
         ):
             # 3rd row is State in RULE table
             state = index.sibling(index.row(), 2)
@@ -23,7 +24,7 @@ class RuleTableModel(QSqlTableModel):
 
     def setData(self, index, value, role=Qt.EditRole):
         if role == Qt.CheckStateRole and (
-            self.flags(index) & Qt.ItemIsUserCheckable != Qt.NoItemFlags
+                self.flags(index) & Qt.ItemIsUserCheckable != Qt.NoItemFlags
         ):
             state = index.sibling(index.row(), 2)
             ret = self.setData(state, value, Qt.EditRole)

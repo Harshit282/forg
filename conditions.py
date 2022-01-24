@@ -1,19 +1,17 @@
-import hazprac
-import buttons
 import os
 import Rules
 import datetime
 
 condition_value = ''  # combobox_value
 operator_value = ''   # combobox1_value
-size_value = 0.0
+size_value = ''
 ext_value = ''
-date_edit_value = 0
+date_edit_value = ''
 unit_value = ''
 actions_value = ''
 original_path = r''
 target_path = r''
-rename_value = r''
+rename_value = ''
 
 
 # https://stackoverflow.com/a/14996816
@@ -66,25 +64,28 @@ def conditions_applied():
                         run_task(actions_value, a)
 
     if condition_value == 'Size':
+        size_value = float(size_value)
         if operator_value == 'is':
             for subdir, dirs, files in os.walk(original_path):
                 for file in files:
                     a = os.path.join(subdir, file)
-                    size_of_file, unit_of_file  = human_size(os.path.getsize(a))
-                    if size_of_file == size_value and unit_of_file == unit_value:
+                    size_of_file, unit_of_file = human_size(os.path.getsize(a))
+                    if size_of_file == size_value == 0:
+                        run_task(actions_value, a)
+                    elif size_of_file == size_value and unit_of_file == unit_value:
                         run_task(actions_value, a)
         elif operator_value == 'greater than':
             for subdir, dirs, files in os.walk(original_path):
                 for file in files:
                     a = os.path.join(subdir, file)
-                    size_of_file, unit_of_file  = human_size(os.path.getsize(a))
+                    size_of_file, unit_of_file = human_size(os.path.getsize(a))
                     if size_of_file > size_value and unit_of_file == unit_value:
                         run_task(actions_value, a)
         elif operator_value == 'less than':
             for subdir, dirs, files in os.walk(original_path):
                 for file in files:
                     a = os.path.join(subdir, file)
-                    size_of_file, unit_of_file  = human_size(os.path.getsize(a))
+                    size_of_file, unit_of_file = human_size(os.path.getsize(a))
                     if size_of_file < size_value and unit_of_file == unit_value:
                         run_task(actions_value, a)
 
@@ -100,4 +101,4 @@ def run_task(action_performed, file_to_process):  # file_to process == a
     elif action_performed == 'Trash Bin':
         Rules.trash_bin(file_to_process)
     elif action_performed == 'Rename':
-        Rules.rename(file_to_process)
+        Rules.rename(file_to_process, rename_value)

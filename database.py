@@ -1,7 +1,5 @@
 import sqlite3
 from sqlite3 import Error
-import buttons
-import Rules
 import conditions
 
 selected_rule = ''
@@ -76,9 +74,9 @@ def rule_insert(con, values):
         print(er.args)
         return False
 
+
 def get_folder_id():
     conn = sql_connection()
-    rule_name = selected_rule
     folder_name = selected_folder
     c = conn.cursor()
     c.execute('select ID from FOLDER where Folder_Name = ?', [folder_name])
@@ -137,7 +135,7 @@ def retrieve_values():
         conditions.rule_name = retrieved_list[0][1:-1]
         conditions.condition_value = retrieved_list[1][2:-1]
         conditions.operator_value = retrieved_list[2][2:-1]
-        conditions.size_value = float(retrieved_list[3][1:])
+        conditions.size_value = retrieved_list[3][1:]
         conditions.ext_value = retrieved_list[4][2:-1]
         conditions.date_edit_value = retrieved_list[5][2:-1]
         conditions.unit_value = retrieved_list[6][2:-1]
@@ -156,7 +154,8 @@ def remove_folder():
         cursor = con.cursor()
         cursor.execute('DELETE FROM CONDITIONS WHERE Rule IN (SELECT Rule_Name FROM RULE WHERE F_ID IN (SELECT ID '
                        'FROM FOLDER WHERE Folder_Name = ?))', [selected_folder])
-        cursor.execute('DELETE FROM RULE WHERE F_ID IN (SELECT ID FROM FOLDER WHERE Folder_Name = ?)', [selected_folder])
+        cursor.execute('DELETE FROM RULE WHERE F_ID IN (SELECT ID FROM FOLDER WHERE Folder_Name = ?)',
+                       [selected_folder])
         cursor.execute('DELETE FROM FOLDER WHERE Folder_Name = ?', [selected_folder])
     except Error as er:
         print(er)
@@ -174,6 +173,7 @@ def remove_rule():
         print(er)
     finally:
         con.commit()
+
 
 def init_database():
     con = sql_connection()

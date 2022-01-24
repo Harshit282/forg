@@ -120,8 +120,7 @@ class Window(QWidget):
         date_edit.setHidden(True)
 
         def update_date():
-            value_date_edit = date_edit.date().toString('yyyyMMdd')
-            # conditions.date_edit_value = int(value_date_edit)
+            date_edit.date().toString('yyyyMMdd')
 
         date_edit.editingFinished.connect(update_date)
 
@@ -154,26 +153,8 @@ class Window(QWidget):
         for u in units:
             unit.addItem(u)
 
-        def on_unit_changed():
-            # conditions.unit_value = unit.currentText()
-            pass
-
-        unit.currentIndexChanged.connect(on_unit_changed)
-
-        def get_size_value():
-            # conditions.size_value = size_value.text()
-            pass
-
-        size_value.editingFinished.connect(get_size_value)
-
-        def get_ext_value():
-            # conditions.ext_value = ext_value.text()
-            pass
-
-        size_value.editingFinished.connect(get_ext_value)
 
         def onActivated():
-            # conditions.condition_value = condition.currentText()
             if condition.currentText() == 'Extension':
                 ext_value.setHidden(False)
                 size_value.setHidden(True)
@@ -192,11 +173,6 @@ class Window(QWidget):
 
         condition.currentIndexChanged.connect(onActivated)
 
-        def combobox1_onActivated():
-            # conditions.operator_value = operator.currentText()
-            pass
-
-        operator.activated.connect(combobox1_onActivated)
         # here int values are as row, column, row_span, column_span....
         # Same for the next grid layout...
 
@@ -220,7 +196,6 @@ class Window(QWidget):
         def select_folder_clicked():
             selected_path = QFileDialog.getExistingDirectory()
             select_folder_btn.setText(selected_path)
-            # conditions.target_path = selected_path
 
         select_folder_btn.clicked.connect(select_folder_clicked)
         remove_folder_btn.clicked.connect(buttons.remove_folder_button_clicked)
@@ -246,7 +221,6 @@ class Window(QWidget):
         self.condition_mapper.addMapping(rename_value, 9)
 
         def on_Activated():
-            # conditions.actions_value = actions.currentText()
             if actions.currentText() == 'Rename':
                 rename_value.setHidden(False)
                 select_folder_btn.setHidden(True)
