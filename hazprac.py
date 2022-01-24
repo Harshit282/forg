@@ -302,7 +302,6 @@ class Window(QWidget):
         save_btn.clicked.connect(save_button_clicked)
         save_btn.clicked.connect(buttons.save_button_clicked)
         remove_folder_btn.clicked.connect(update_folder_model)
-        remove_rule_btn.clicked.connect(buttons.remove_rule_button_clicked)
 
         def selectionChanged(item):
             root_dir = item.data()
@@ -330,8 +329,6 @@ class Window(QWidget):
         folder_listview.clicked.connect(selectionChanged)
         folder_listview.clicked.connect(ruleUnselected)
 
-
-
         def init_rules():
             self.rule_model.setFilter("F_ID = {}".format(database.get_folder_id()))
             self.rule_model.select()
@@ -354,6 +351,10 @@ class Window(QWidget):
             self.condition_mapper.toFirst()
 
         rule_listview.selectionModel().currentChanged.connect(change_rule)
+
+        remove_rule_btn.clicked.connect(buttons.remove_rule_button_clicked)
+        remove_rule_btn.clicked.connect(init_rules)
+        remove_rule_btn.clicked.connect(ruleUnselected)
 
         # Packing layouts into the main window which is in vertical layout...
 
