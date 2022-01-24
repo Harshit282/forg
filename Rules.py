@@ -2,8 +2,6 @@ import shutil
 import os
 from send2trash import send2trash
 
-rules_list = []
-
 
 def move(op, tp):
     shutil.move(op, tp)   # first file to be copied path... then destination path...

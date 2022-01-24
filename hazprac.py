@@ -7,6 +7,7 @@ import os
 import Rules
 import conditions
 import database
+import models
 
 
 class Window(QWidget):
@@ -14,8 +15,7 @@ class Window(QWidget):
         super().__init__()
         self.setGeometry(100, 100, 800, 500)
         self.setWindowTitle('File Organizer')
-        con = database.sql_connection()
-        database.condition_table(con)
+        database.init_database()
         db = QSqlDatabase.addDatabase("QSQLITE")
         db.setDatabaseName("database.db")
         db.open()
@@ -35,20 +35,20 @@ class Window(QWidget):
         no_rule_label = QLabel("No rule selected")
         no_rule_label.setAlignment(Qt.AlignCenter)
         frame = QFrame()
-        chk_vbox = QVBoxLayout()
         all_panel_hbox = QHBoxLayout()
         btm_hbox = QHBoxLayout()
         panel3_hbox = QHBoxLayout()
         panel3_grid = QGridLayout()
         model = QStandardItemModel()
 
-        btn1 = QPushButton()
-        btn2 = QPushButton()
+        add_folder_button = QPushButton()
+        add_rule_button = QPushButton()
+        add_rule_button.setEnabled(False)
         btn3 = QPushButton()
-        btn1.setIcon(QIcon('icons/add folder.png'))
-        btn1.setToolTip('Add Folder')
-        btn2.setIcon(QIcon('icons/add rule.png'))
-        btn2.setToolTip('Add Rule')
+        add_folder_button.setIcon(QIcon('icons/add folder.png'))
+        add_folder_button.setToolTip('Add Folder')
+        add_rule_button.setIcon(QIcon('icons/add rule.png'))
+        add_rule_button.setToolTip('Select a folder first')
         btn3.setIcon(QIcon('icons/pause.png'))
         btn3.setToolTip('Pause')
         remove_folder_btn = QPushButton()
@@ -57,7 +57,7 @@ class Window(QWidget):
 
         # Panel 1 starts from here...
 
-        icon1_hbox.addWidget(btn1)
+        icon1_hbox.addWidget(add_folder_button)
         icon1_hbox.addWidget(remove_folder_btn)
         icon1_hbox.addStretch()
         folders_label = QLabel("Folders")
@@ -74,16 +74,22 @@ class Window(QWidget):
 
         # Panel 2 starts from here...
 
-        icon2_hbox.addWidget(btn2)
+        icon2_hbox.addWidget(add_rule_button)
         icon2_hbox.addStretch()
         panel2_vbox.addLayout(icon2_hbox)
 
         rules_label = QLabel("Rules")
         panel2_vbox.addWidget(rules_label)
 
-        listbox2 = QListWidget()
-        panel2_vbox.addWidget(listbox2)
-        listbox2.setLayout(chk_vbox)
+        rule_listview = QListWidget()
+        self.rule_model = models.RuleTableModel(self)
+        self.rule_model.setEditStrategy(QSqlTableModel.OnFieldChange)
+        self.rule_model.setTable("RULE")
+        rule_listview = QListView()
+        rule_listview.setModel(self.rule_model)
+        rule_listview.setModelColumn(1)
+        rule_listview.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        panel2_vbox.addWidget(rule_listview)
 
         # Panel 3 starts from here...
 
@@ -268,35 +274,19 @@ class Window(QWidget):
 
         # Buttons/Icons clicked actions are defined here...
         # They have been imported from buttons python file...
-        btn1.clicked.connect(buttons.add_folder_clicked)
+        add_folder_button.clicked.connect(buttons.add_folder_clicked)
         def update_folder_model():
             self.folder_model.select()
-        btn1.clicked.connect(update_folder_model)
+        add_folder_button.clicked.connect(update_folder_model)
 
-        def update_rule_list():
-            checkbox = QListWidgetItem()
-            checkbox.setFlags(checkbox.flags() | Qt.ItemIsUserCheckable)
-            checkbox.setCheckState(Qt.Unchecked)
-            text, ok = QInputDialog.getText(self, 'New rule', 'Enter name:')
-            if ok and text:
-                checkbox.setText(text)
-                listbox2.addItem(checkbox)
-
-        def add_rules(name):
-            checkbox = QListWidgetItem()
-            checkbox.setFlags(checkbox.flags() | Qt.ItemIsUserCheckable)
-            checkbox.setCheckState(Qt.Unchecked)
-            checkbox.setText(name)
-            listbox2.addItem(checkbox)
 
         def rule_item_clicked(item):
-            if item.isSelected():
-                line_edit.setText(item.text())
+            line_edit.setText(item.data())
 
-        listbox2.itemClicked.connect(rule_item_clicked)
+        rule_listview.selectionModel().currentChanged.connect(rule_item_clicked)
 
         def update_rule_name():
-            i = listbox2.selectedItems()[0]
+            i = rule_listview.selectedItems()[0]
             i.setText(line_edit.text())
 
         line_edit.editingFinished.connect(update_rule_name)
@@ -308,7 +298,6 @@ class Window(QWidget):
             self.condition_mapper.revert()
         discard_btn.clicked.connect(discard_button_clicked)
 
-        btn2.clicked.connect(update_rule_list)
         btn3.clicked.connect(buttons.resume_pause_clicked)
         save_btn.clicked.connect(save_button_clicked)
         save_btn.clicked.connect(buttons.save_button_clicked)
@@ -318,40 +307,53 @@ class Window(QWidget):
         def selectionChanged(item):
             root_dir = item.data()
             conditions.original_path = root_dir
-            listbox2.clear()
-            Rules.rules_list.clear()
-            database.initRules()
-            for r in Rules.rules_list:
-                print(r)
-                add_rules(r)
+            # Enable add rule button now since a
+            # folder is selected
+            add_rule_button.setEnabled(True)
+            add_rule_button.setToolTip("Add Rule")
 
         def ruleSelected(item):
-            if item.isSelected():
-                frame.setLayout(panel3_vbox)
-                frame.show()
-                no_rule_label.hide()
+            frame.setLayout(panel3_vbox)
+            frame.show()
+            no_rule_label.hide()
 
-        listbox2.itemClicked.connect(ruleSelected)
+        rule_listview.selectionModel().currentChanged.connect(ruleSelected)
 
         def ruleUnselected():
             frame.hide()
             no_rule_label.show()
 
         # part of database system...
-        listbox2.itemClicked.connect(database.getSelectedRule)
-        listbox2.itemClicked.connect(database.insertCondition)
+        rule_listview.selectionModel().currentChanged.connect(database.getSelectedRule)
+        rule_listview.selectionModel().currentChanged.connect(database.insertCondition)
         folder_listview.clicked.connect(database.getSelectedFolder)
         folder_listview.clicked.connect(selectionChanged)
         folder_listview.clicked.connect(ruleUnselected)
 
+
+
+        def init_rules():
+            self.rule_model.setFilter("F_ID = {}".format(database.get_folder_id()))
+            self.rule_model.select()
+        folder_listview.clicked.connect(init_rules)
+        def update_rule_list():
+            text, ok = QInputDialog.getText(self, 'New rule', 'Enter name:')
+            if ok and text:
+                database.selected_rule = text
+                record = self.rule_model.record()
+                record.setValue("F_ID", database.get_folder_id())
+                record.setValue("Rule_Name", text)
+                record.setValue("State", 0)
+                if (self.rule_model.insertRecord(-1, record)):
+                    print("Rule Insertion Successful")
+                init_rules()
+        add_rule_button.clicked.connect(update_rule_list)
         def change_rule():
-            print("rule changed")
-            print(database.selected_rule)
             self.condition_model.setFilter("Rule = '{}'".format(database.selected_rule))
             self.condition_model.select()
             self.condition_mapper.toFirst()
 
-        listbox2.itemClicked.connect(change_rule)
+        rule_listview.selectionModel().currentChanged.connect(change_rule)
 
         # Packing layouts into the main window which is in vertical layout...
 

@@ -11,7 +11,7 @@ retrieved_list = []
 
 def getSelectedRule(rule):
     global selected_rule
-    selected_rule = rule.text()
+    selected_rule = rule.data()
 
 
 def getSelectedFolder(folder):
@@ -45,8 +45,9 @@ def rule_table(con):
     try:
         cursor = con.cursor()
         cursor.execute("""CREATE TABLE if not exists RULE(
-F_ID      integer            NOT_NULL,
+F_ID      integer            NOT NULL,
 Rule_Name   TEXT             NOT NULL PRIMARY KEY,
+State       integer,
 FOREIGN KEY(F_ID) REFERENCES FOLDER(ID))""")
     except Error as er:
         print(er)
@@ -75,35 +76,15 @@ def rule_insert(con, values):
         print(er.args)
         return False
 
-def initRules():
+def get_folder_id():
     conn = sql_connection()
-    folder_table(conn)
-    c = conn.cursor()
-    c.execute("""select ID from FOLDER where Folder_Name = ?""", [selected_folder])
-    f_id = c.fetchone()
-    f_id = str(f_id)[1:-2]
-    rule_table(conn)
-    c.execute("""select Rule_Name from RULE where RULE.F_ID = ?""", [f_id])
-    for row in c.fetchall():
-        row = str(row)[2:-3]
-        Rules.rules_list.append(row)
-
-
-def insertRule():
-    conn = sql_connection()
-    folder_table(conn)
     rule_name = selected_rule
     folder_name = selected_folder
     c = conn.cursor()
     c.execute('select ID from FOLDER where Folder_Name = ?', [folder_name])
     folder_id = c.fetchone()
     folder_id = str(folder_id)[1:-2]
-    rule_table(conn)
-    values = (folder_id, rule_name)
-    if rule_insert(conn, values):
-        print("R Records Inserted")
-    else:
-        print("R Records not Inserted")
+    return folder_id
 
 
 def condition_table(con):
@@ -130,9 +111,8 @@ def condition_table(con):
 
 
 def insertCondition(value):
-    value = value.text()
+    value = value.data()
     con = sql_connection()
-    condition_table(con)
     try:
         cursor = con.cursor()
         cursor.execute('INSERT INTO CONDITIONS(Rule) VALUES(?)', [value])
@@ -194,3 +174,9 @@ def remove_rule():
         print(er)
     finally:
         con.commit()
+
+def init_database():
+    con = sql_connection()
+    folder_table(con)
+    rule_table(con)
+    condition_table(con)

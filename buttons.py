@@ -30,7 +30,7 @@ def resume_pause_clicked():
 
 
 def save_button_clicked():
-    database.insertRule()
+    pass
 
 
 def remove_folder_button_clicked():
