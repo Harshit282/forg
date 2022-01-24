@@ -15,8 +15,12 @@ def add_folder_clicked():
         database.folder_table(conn)
         values = (selected_folder, str(folder_path))
         if database.sql_insert(conn, values):
+            # After insertion of a folder, no folder will be selected
+            database.selected_folder = ''
+            return True
             print("F Records Inserted")
         else:
+            return False
             print("F Records not Inserted")
 
 

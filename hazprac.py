@@ -248,11 +248,8 @@ class Window(QWidget):
 
         # Buttons/Icons clicked actions are defined here...
         # They have been imported from buttons python file...
-        add_folder_button.clicked.connect(buttons.add_folder_clicked)
         def update_folder_model():
             self.folder_model.select()
-        add_folder_button.clicked.connect(update_folder_model)
-
 
         def rule_item_clicked(item):
             line_edit.setText(item.data())
@@ -305,6 +302,7 @@ class Window(QWidget):
             self.rule_model.setFilter("F_ID = {}".format(database.get_folder_id()))
             self.rule_model.select()
         folder_listview.clicked.connect(init_rules)
+
         def update_rule_list():
             text, ok = QInputDialog.getText(self, 'New rule', 'Enter name:')
             if ok and text:
@@ -314,9 +312,20 @@ class Window(QWidget):
                 record.setValue("Rule_Name", text)
                 record.setValue("State", 0)
                 if (self.rule_model.insertRecord(-1, record)):
-                    print("Rule Insertion Successful")
-                init_rules()
+                    database.selected_rule = ''
+                    init_rules()
+                    ruleUnselected()
+
         add_rule_button.clicked.connect(update_rule_list)
+
+        def add_folder():
+            added = buttons.add_folder_clicked()
+            if added:
+                update_folder_model()
+                init_rules()
+                ruleUnselected()
+        add_folder_button.clicked.connect(add_folder)
+
         def change_rule():
             self.condition_model.setFilter("Rule = '{}'".format(database.selected_rule))
             self.condition_model.select()
