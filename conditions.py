@@ -1,6 +1,8 @@
 import os
 import Rules
 import datetime
+import sys
+import decimal
 
 rule_name = ''
 condition_value = ''  # combobox_value
@@ -19,13 +21,23 @@ rename_value = ''
 suffixes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
 
 
-def human_size(n_bytes):
+def binary_size(n_bytes):
     size = int(n_bytes)
     i = 0
     for i in range(len(suffixes)):
         if unit_value == suffixes[i]:
             break
     size *= (1024 ** int(i))
+    return size
+
+
+def decimal_size(n_bytes):
+    size = int(n_bytes)
+    i = 0
+    for i in range(len(suffixes)):
+        if unit_value == suffixes[i]:
+            break
+    size *= (1000 ** int(i))
     return size
 
 
@@ -68,42 +80,83 @@ def conditions_applied():
 
     if condition_value == 'Size':
         size_value = float(size_value)
-        if operator_value == 'is':
-            for subdir, dirs, files in os.walk(original_path):
-                for file in files:
-                    a = os.path.join(subdir, file)
-                    size_of_file = os.path.getsize(a)
-                    i = 0
-                    while size_of_file >= 1024:
-                        size_of_file = size_of_file // 1024
-                        i += 1
-                    size_of_file *= (1024 ** int(i))
-                    if size_of_file == human_size(size_value):
-                        run_task(actions_value, a)
-        elif operator_value == 'greater than':
-            for subdir, dirs, files in os.walk(original_path):
-                for file in files:
-                    a = os.path.join(subdir, file)
-                    size_of_file = os.path.getsize(a)
-                    i = 0
-                    while size_of_file >= 1024:
-                        size_of_file = size_of_file // 1024
-                        i += 1
-                    size_of_file *= (1024 ** int(i))
-                    if size_of_file > human_size(size_value):
-                        run_task(actions_value, a)
-        elif operator_value == 'less than':
-            for subdir, dirs, files in os.walk(original_path):
-                for file in files:
-                    a = os.path.join(subdir, file)
-                    size_of_file = os.path.getsize(a)
-                    i = 0
-                    while size_of_file >= 1024:
-                        size_of_file = size_of_file // 1024
-                        i += 1
-                    size_of_file *= (1024 ** int(i))
-                    if size_of_file < human_size(size_value):
-                        run_task(actions_value, a)
+        if sys.platform == 'win32':
+            size_stored_value = int(1024)
+            if operator_value == 'is':
+                for subdir, dirs, files in os.walk(original_path):
+                    for file in files:
+                        a = os.path.join(subdir, file)
+                        size_of_file = os.path.getsize(a)
+                        i = 0
+                        while size_of_file >= size_stored_value:
+                            size_of_file = size_of_file / size_stored_value
+                            i += 1
+                        size_of_file *= (size_stored_value ** int(i))
+                        if size_of_file == binary_size(size_value):
+                            run_task(actions_value, a)
+            elif operator_value == 'greater than':
+                for subdir, dirs, files in os.walk(original_path):
+                    for file in files:
+                        a = os.path.join(subdir, file)
+                        size_of_file = os.path.getsize(a)
+                        i = 0
+                        while size_of_file >= size_stored_value:
+                            size_of_file = size_of_file / size_stored_value
+                            i += 1
+                        size_of_file *= (size_stored_value ** int(i))
+                        if size_of_file > binary_size(size_value):
+                            run_task(actions_value, a)
+            elif operator_value == 'less than':
+                for subdir, dirs, files in os.walk(original_path):
+                    for file in files:
+                        a = os.path.join(subdir, file)
+                        size_of_file = os.path.getsize(a)
+                        i = 0
+                        while size_of_file >= size_stored_value:
+                            size_of_file = size_of_file / size_stored_value
+                            i += 1
+                        size_of_file *= (size_stored_value ** int(i))
+                        if size_of_file < binary_size(size_value):
+                            run_task(actions_value, a)
+        else:
+            size_stored_value = int(1000)
+            decimal_value = decimal.Decimal(size_value).as_tuple().exponent
+            if operator_value == 'is':
+                for subdir, dirs, files in os.walk(original_path):
+                    for file in files:
+                        a = os.path.join(subdir, file)
+                        size_of_file = os.path.getsize(a)
+                        i = 0
+                        while size_of_file >= size_stored_value:
+                            size_of_file = size_of_file / size_stored_value
+                            i += 1
+                        size_of_file = '{:.{}f}'.format(size_of_file, decimal_value) * (size_stored_value ** int(i))
+                        if size_of_file == decimal_size(size_value):
+                            run_task(actions_value, a)
+            elif operator_value == 'greater than':
+                for subdir, dirs, files in os.walk(original_path):
+                    for file in files:
+                        a = os.path.join(subdir, file)
+                        size_of_file = os.path.getsize(a)
+                        i = 0
+                        while size_of_file >= size_stored_value:
+                            size_of_file = size_of_file / size_stored_value
+                            i += 1
+                        size_of_file = '{:.{}f}'.format(size_of_file, decimal_value) * (size_stored_value ** int(i))
+                        if size_of_file > decimal_size(size_value):
+                            run_task(actions_value, a)
+            elif operator_value == 'less than':
+                for subdir, dirs, files in os.walk(original_path):
+                    for file in files:
+                        a = os.path.join(subdir, file)
+                        size_of_file = os.path.getsize(a)
+                        i = 0
+                        while size_of_file >= size_stored_value:
+                            size_of_file = size_of_file / size_stored_value
+                            i += 1
+                        size_of_file = '{:.{}f}'.format(size_of_file, decimal_value) * (size_stored_value ** int(i))
+                        if size_of_file < decimal_size(size_value):
+                            run_task(actions_value, a)
 
 
 def run_task(action_performed, file_to_process):  # file_to process == a
