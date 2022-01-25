@@ -120,7 +120,7 @@ def conditions_applied():
                             run_task(actions_value, a)
         else:
             size_stored_value = int(1000)
-            decimal_value = decimal.Decimal(size_value).as_tuple().exponent
+            decimal_value = int(decimal.Decimal(size_value).as_tuple().exponent)
             if operator_value == 'is':
                 for subdir, dirs, files in os.walk(original_path):
                     for file in files:
