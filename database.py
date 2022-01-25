@@ -166,12 +166,18 @@ def retrieve_values():
 def remove_folder():
     con = sql_connection()
     try:
-        cursor = con.cursor()
-        cursor.execute('DELETE FROM CONDITIONS WHERE Rule IN (SELECT Rule_Name FROM RULE WHERE F_ID IN (SELECT ID '
-                       'FROM FOLDER WHERE Folder_Name = ?))', [selected_folder])
-        cursor.execute('DELETE FROM RULE WHERE F_ID IN (SELECT ID FROM FOLDER WHERE Folder_Name = ?)',
-                       [selected_folder])
-        cursor.execute('DELETE FROM FOLDER WHERE Folder_Name = ?', [selected_folder])
+        if selected_folder:
+            cursor = con.cursor()
+            cursor.execute('DELETE FROM CONDITIONS WHERE Rule IN (SELECT Rule_Name FROM RULE WHERE F_ID IN (SELECT ID '
+                           'FROM FOLDER WHERE Folder_Name = ?))', [selected_folder])
+            cursor.execute('DELETE FROM RULE WHERE F_ID IN (SELECT ID FROM FOLDER WHERE Folder_Name = ?)',
+                           [selected_folder])
+            cursor.execute('DELETE FROM FOLDER WHERE Folder_Name = ?', [selected_folder])
+            print("folder deletion successful")
+            return True
+        else:
+            print("no folder selected for deletion")
+            return False
     except Error as er:
         print(er)
     finally:

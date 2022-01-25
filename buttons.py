@@ -35,7 +35,7 @@ def save_button_clicked():
 
 
 def remove_folder_button_clicked():
-    database.remove_folder()
+    return database.remove_folder()
 
 
 def remove_rule_button_clicked():

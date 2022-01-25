@@ -198,7 +198,6 @@ class Window(QWidget):
             select_folder_btn.setText(selected_path)
 
         select_folder_btn.clicked.connect(select_folder_clicked)
-        remove_folder_btn.clicked.connect(buttons.remove_folder_button_clicked)
 
 
         rename_value = QLineEdit()
@@ -274,9 +273,7 @@ class Window(QWidget):
         save_btn.clicked.connect(buttons.save_button_clicked)
         remove_folder_btn.clicked.connect(update_folder_model)
 
-        def selectionChanged(item):
-            # Enable add rule button now since a
-            # folder is selected
+        def folder_selected():
             add_rule_button.setEnabled(True)
             add_rule_button.setToolTip("Add Rule")
 
@@ -291,11 +288,16 @@ class Window(QWidget):
             frame.hide()
             no_rule_label.show()
 
+        def folder_unselected():
+            add_rule_button.setEnabled(False)
+            add_rule_button.setToolTip("Select a folder first")
+            database.selected_folder = ''
+
         # part of database system...
         rule_listview.selectionModel().currentChanged.connect(database.getSelectedRule)
         rule_listview.selectionModel().currentChanged.connect(database.insertCondition)
         folder_listview.clicked.connect(database.getSelectedFolder)
-        folder_listview.clicked.connect(selectionChanged)
+        folder_listview.clicked.connect(folder_selected)
         folder_listview.clicked.connect(ruleUnselected)
 
         def init_rules():
@@ -321,10 +323,19 @@ class Window(QWidget):
         def add_folder():
             added = buttons.add_folder_clicked()
             if added:
+                folder_unselected()
                 update_folder_model()
-                init_rules()
                 ruleUnselected()
+                init_rules()
         add_folder_button.clicked.connect(add_folder)
+
+        def remove_folder():
+            removed = buttons.remove_folder_button_clicked()
+            if removed:
+                folder_unselected()
+                update_folder_model()
+                ruleUnselected()
+                init_rules()
 
         def change_rule():
             self.condition_model.setFilter("Rule = '{}'".format(database.selected_rule))
@@ -336,8 +347,7 @@ class Window(QWidget):
         remove_rule_btn.clicked.connect(buttons.remove_rule_button_clicked)
         remove_rule_btn.clicked.connect(init_rules)
         remove_rule_btn.clicked.connect(ruleUnselected)
-        remove_folder_btn.clicked.connect(init_rules)
-        remove_folder_btn.clicked.connect(ruleUnselected)
+        remove_folder_btn.clicked.connect(remove_folder)
 
         # Packing layouts into the main window which is in vertical layout...
 
