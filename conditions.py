@@ -130,7 +130,7 @@ def conditions_applied():
                         while size_of_file >= size_stored_value:
                             size_of_file = size_of_file / size_stored_value
                             i += 1
-                        size_of_file = '{:.{}f}'.format(size_of_file, decimal_value) * (size_stored_value ** int(i))
+                        size_of_file = f"{size_of_file}:.{decimal_value}f" * (size_stored_value ** int(i))
                         if size_of_file == decimal_size(size_value):
                             run_task(actions_value, a)
             elif operator_value == 'greater than':
@@ -142,7 +142,7 @@ def conditions_applied():
                         while size_of_file >= size_stored_value:
                             size_of_file = size_of_file / size_stored_value
                             i += 1
-                        size_of_file = '{:.{}f}'.format(size_of_file, decimal_value) * (size_stored_value ** int(i))
+                        size_of_file = f"{size_of_file}:.{decimal_value}f" * (size_stored_value ** int(i))
                         if size_of_file > decimal_size(size_value):
                             run_task(actions_value, a)
             elif operator_value == 'less than':
@@ -154,7 +154,7 @@ def conditions_applied():
                         while size_of_file >= size_stored_value:
                             size_of_file = size_of_file / size_stored_value
                             i += 1
-                        size_of_file = '{:.{}f}'.format(size_of_file, decimal_value) * (size_stored_value ** int(i))
+                        size_of_file = f"{size_of_file}:.{decimal_value}f" * (size_stored_value ** int(i))
                         if size_of_file < decimal_size(size_value):
                             run_task(actions_value, a)
 
