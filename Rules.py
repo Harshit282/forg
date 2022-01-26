@@ -31,5 +31,13 @@ def rename(op, rename_text):
     # \ on Windows, / on others
     os_path_separator = QDir.separator()
     tp = directory + os_path_separator + rename_text
+
+    counter = 1
+    # Check whether such file already exists
+    while os.path.exists(tp):
+        # Add number in front if it does
+        tp = tp + "(" + str(counter) + ")"
+        counter += 1
+
     # Finally call rename
     os.rename(op, tp)
