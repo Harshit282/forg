@@ -126,7 +126,7 @@ def retrieve_folder_path():
     try:
         cursor = con.cursor()
         cursor.execute('SELECT Folder_Path FROM FOLDER WHERE Folder_Name = ?', [selected_folder])
-        conditions.original_path = str(cursor.fetchone())[2:-3]
+        conditions.original_path = str(cursor.fetchone())[3:-4]
     except Error as er:
         print(er)
     finally:
