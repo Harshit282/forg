@@ -36,7 +36,8 @@ def rename(op, rename_text):
     # Check whether such file already exists
     while os.path.exists(tp):
         # Add number in front if it does
-        tp = tp + "(" + str(counter) + ")"
+        filepath, extension = os.path.splitext(tp)
+        tp = filepath + "(" + str(counter) + ")" + extension
         counter += 1
 
     # Finally call rename
