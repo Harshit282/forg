@@ -2,6 +2,7 @@ import shutil
 import os
 import sys
 from send2trash import send2trash
+from PyQt5.QtCore import QDir, QFileInfo
 
 
 def move(op, tp):
@@ -25,13 +26,10 @@ def trash_bin(op):
 
 
 def rename(op, rename_text):
-    pass
-    # print(op)
-    # # os.chdir(op)  # path here...
-    #
-    # for count, f in enumerate(os.listdir()):
-    #     f_name, f_ext = os.path.splitext(f)
-    #     f_name = str(rename_text) + str(count)  # here instead of geek pass the value of line edit...
-    #
-    #     new_name = f'{f_name}{f_ext}'
-    #     os.rename(f, new_name)
+    fi = QFileInfo(op)
+    directory = fi.dir().path()
+    # \ on Windows, / on others
+    os_path_separator = QDir.separator()
+    tp = directory + os_path_separator + rename_text
+    # Finally call rename
+    os.rename(op, tp)
