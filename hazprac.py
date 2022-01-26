@@ -43,12 +43,10 @@ class Window(QWidget):
 
         add_folder_button = QPushButton()
         add_rule_button = QPushButton()
-        add_rule_button.setEnabled(False)
         btn3 = QPushButton()
         add_folder_button.setIcon(QIcon('icons/add folder.png'))
         add_folder_button.setToolTip('Add Folder')
         add_rule_button.setIcon(QIcon('icons/add rule.png'))
-        add_rule_button.setToolTip('Select a folder first')
         btn3.setIcon(QIcon('icons/pause.png'))
         btn3.setToolTip('Pause')
         remove_folder_btn = QPushButton()
@@ -274,6 +272,8 @@ class Window(QWidget):
         remove_folder_btn.clicked.connect(update_folder_model)
 
         def folder_selected():
+            remove_folder_btn.setEnabled(True)
+            remove_folder_btn.setToolTip("Remove Folder")
             add_rule_button.setEnabled(True)
             add_rule_button.setToolTip("Add Rule")
 
@@ -289,9 +289,13 @@ class Window(QWidget):
             no_rule_label.show()
 
         def folder_unselected():
+            remove_folder_btn.setEnabled(False)
+            remove_folder_btn.setToolTip("Select a folder first")
             add_rule_button.setEnabled(False)
             add_rule_button.setToolTip("Select a folder first")
             database.selected_folder = ''
+        # For first launch
+        folder_unselected()
 
         # part of database system...
         rule_listview.selectionModel().currentChanged.connect(database.getSelectedRule)
