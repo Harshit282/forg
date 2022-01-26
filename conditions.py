@@ -29,16 +29,15 @@ if sys.platform == 'win32':
     size_base = 1024
 
 def human_size(n_bytes):
-    # https://stackoverflow.com/a/6190291
     # TODO: Due to our database value being float,
     # it will always have 1 decimal number, i.e '0'
     # even if user entered an integer
+    # https://stackoverflow.com/a/6190291
     no_of_decimals = abs(decimal.Decimal(str(size_value)).as_tuple().exponent)
-    print("no_of_decimals")
-    print(no_of_decimals)
+    print("No of decimals: {}".format(no_of_decimals))
     unit = unit_value
     i = 0
-    while n_bytes >= size_base and unit != suffixes[i]:
+    while unit != suffixes[i]:
         n_bytes /= size_base
         i += 1
     result = '{:.{}f}'.format(n_bytes, no_of_decimals)
@@ -85,10 +84,8 @@ def conditions_applied():
                 for file in files:
                     a = os.path.join(subdir, file)
                     size_of_file = human_size(os.path.getsize(a))
-                    print("size of file")
-                    print(size_of_file)
-                    print("condition_value")
-                    print(size_value)
+                    print("Calculated size of file: {}".format(size_of_file))
+                    print("Size given in condition: {}".format(size_value))
                     if size_of_file == size_value == 0:
                         run_task(actions_value, a)
                     elif size_of_file == size_value:
