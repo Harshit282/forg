@@ -4,7 +4,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtSql import *
 import buttons
 import os
-import Rules
+import actions
 import conditions
 import database
 import models

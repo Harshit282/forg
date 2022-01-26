@@ -1,5 +1,5 @@
 import os
-import Rules
+import actions
 import datetime
 import sys
 import decimal
@@ -109,12 +109,12 @@ def conditions_applied():
 def run_task(action_performed, file_to_process):  # file_to process == a
     global target_path
     if action_performed == 'Copy':
-        Rules.copy(file_to_process, target_path)
+        actions.copy(file_to_process, target_path)
     elif action_performed == 'Move':
-        Rules.move(file_to_process, target_path)
+        actions.move(file_to_process, target_path)
     elif action_performed == 'Delete':
-        Rules.delete(file_to_process)
+        actions.delete(file_to_process)
     elif action_performed == 'Trash Bin':
-        Rules.trash_bin(file_to_process)
+        actions.trash_bin(file_to_process)
     elif action_performed == 'Rename':
-        Rules.rename(file_to_process, rename_value)
+        actions.rename(file_to_process, rename_value)
