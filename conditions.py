@@ -1,11 +1,13 @@
 import os
 import Rules
 import datetime
+import sys
+import decimal
 
 rule_name = ''
 condition_value = ''  # combobox_value
 operator_value = ''   # combobox1_value
-size_value = ''
+size_value = 0.0
 ext_value = ''
 date_edit_value = ''
 unit_value = ''
@@ -18,21 +20,27 @@ rename_value = ''
 # https://stackoverflow.com/a/14996816
 suffixes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
 
+size_base = 1000
+# Windows file explorer shows values in KiB, MiB..., but labels it KB, MB...
+# https://imgs.xkcd.com/comics/kilobyte.png
+# We shouldn't be doing this, but most of the windows user will use file explorer
+# to check sizes and they'd think it's our application that's wrong
+if sys.platform == 'win32':
+    size_base = 1024
 
 def human_size(n_bytes):
+    # https://stackoverflow.com/a/6190291
+    no_of_decimals = abs(decimal.Decimal(str(size_value)).as_tuple().exponent)
+    unit = unit_value
     i = 0
-    while n_bytes >= 1000 and i < len(suffixes) - 1:
-        n_bytes /= 1000.
+    while n_bytes >= size_base and unit != suffixes[i]:
+        n_bytes /= size_base
         i += 1
-    f = ('%.1f' % n_bytes).rstrip('0').rstrip('.')
-    # return '%s %s' % (f, suffixes[i])
-    return float(f), suffixes[i]
+    result = '{:.{}f}'.format(n_bytes, no_of_decimals)
+    return float(result)
 
 
 def conditions_applied():
-    global operator_value, actions_value, condition_value, date_edit_value, unit_value, size_value, ext_value
-    print(rule_name, condition_value, operator_value, size_value, ext_value, date_edit_value, unit_value, actions_value,
-          original_path, target_path, rename_value)
     if condition_value == 'Extension':
         if operator_value == 'is':
             for subdir, dirs, files in os.walk(original_path):
@@ -67,29 +75,28 @@ def conditions_applied():
                         run_task(actions_value, a)
 
     if condition_value == 'Size':
-        size_value = float(size_value)
         if operator_value == 'is':
             for subdir, dirs, files in os.walk(original_path):
                 for file in files:
                     a = os.path.join(subdir, file)
-                    size_of_file, unit_of_file = human_size(os.path.getsize(a))
+                    size_of_file = human_size(os.path.getsize(a))
                     if size_of_file == size_value == 0:
                         run_task(actions_value, a)
-                    elif size_of_file == size_value and unit_of_file == unit_value:
+                    elif size_of_file == size_value:
                         run_task(actions_value, a)
         elif operator_value == 'greater than':
             for subdir, dirs, files in os.walk(original_path):
                 for file in files:
                     a = os.path.join(subdir, file)
-                    size_of_file, unit_of_file = human_size(os.path.getsize(a))
-                    if size_of_file > size_value and unit_of_file == unit_value:
+                    size_of_file = human_size(os.path.getsize(a))
+                    if size_of_file > size_value:
                         run_task(actions_value, a)
         elif operator_value == 'less than':
             for subdir, dirs, files in os.walk(original_path):
                 for file in files:
                     a = os.path.join(subdir, file)
-                    size_of_file, unit_of_file = human_size(os.path.getsize(a))
-                    if size_of_file < size_value and unit_of_file == unit_value:
+                    size_of_file = human_size(os.path.getsize(a))
+                    if size_of_file < size_value:
                         run_task(actions_value, a)
 
 
