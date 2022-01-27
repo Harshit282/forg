@@ -41,6 +41,15 @@ def human_size(n_bytes):
         n_bytes /= size_base
         i += 1
     result = '{:.{}f}'.format(n_bytes, no_of_decimals)
+    # Windows file explorer doesn't show decimal value
+    # for items above 100 non-decimal value.
+    # We shouldn't be handling this, but Harshit282 wants it,
+    # so add it.
+    if sys.platform == 'win32':
+        value = float(result)
+        if int(value) >= 100:
+            return int(value)
+
     return float(result)
 
 
