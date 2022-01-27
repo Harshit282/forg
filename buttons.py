@@ -25,7 +25,6 @@ def add_folder_clicked():
 
 
 def resume_pause_clicked():
-    database.retrieve_folder_path()
     database.retrieve_values()
     conditions.conditions_applied()
 

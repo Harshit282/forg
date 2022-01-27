@@ -271,7 +271,10 @@ class Window(QWidget):
         save_btn.clicked.connect(buttons.save_button_clicked)
         remove_folder_btn.clicked.connect(update_folder_model)
 
-        def folder_selected():
+        def folder_selected(index):
+            # Folder_Path is 3rd column
+            path = index.sibling(index.row(), 2).data()
+            conditions.original_path = path
             remove_folder_btn.setEnabled(True)
             remove_folder_btn.setToolTip("Remove Folder")
             add_rule_button.setEnabled(True)
