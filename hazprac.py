@@ -96,9 +96,9 @@ class Window(QWidget):
         panel3_vbox.addLayout(icon3_hbox)
 
         label_panel3 = QLabel("NAME: ")
-        line_edit = QLineEdit()
+        rule_name = QLineEdit()
         panel3_hbox.addWidget(label_panel3)
-        panel3_hbox.addWidget(line_edit)
+        panel3_hbox.addWidget(rule_name)
         panel3_vbox.addLayout(panel3_hbox)
 
         # Added the third panel window here...
@@ -249,15 +249,40 @@ class Window(QWidget):
             self.folder_model.select()
 
         def rule_item_clicked(item):
-            line_edit.setText(item.data())
+            rule_name.setText(item.data())
 
         rule_listview.selectionModel().currentChanged.connect(rule_item_clicked)
 
         def update_rule_name():
-            #TODO
-            pass
+            # Make sure line edit is not blank
+            if rule_name.text():
+                # Update in RULE table
+                index = rule_listview.selectionModel().currentIndex()
+                inserted = self.rule_model.setData(index, rule_name.text())
+                # Update in CONDITION table if returns True
+                if inserted:
+                    success = database.update_condition_rule(rule_name.text())
+                    if success:
+                        # Update runtime variable holding rule name
+                        database.getSelectedRule(index)
+                    else:
+                        # If CONDITIONS table updatation fails,
+                        # revert RULE table modifications
+                        self.rule_model.revert()
+                # Failed, probably due to being duplicate
+                else:
+                    self.rule_model.revert()
+                    QMessageBox.warning(self, "Rename Failed",
+                                        "Rule with that name already exists.")
+                    # Focus rename widget and select text
+                    rule_name.setFocus()
+                    rule_name.selectAll()
+            else:
+                # Blank name was given
+                QMessageBox.warning(self, "Rename Failed",
+                                    "Rule name can not be blank")
 
-        line_edit.editingFinished.connect(update_rule_name)
+        rule_name.returnPressed.connect(update_rule_name)
 
         def save_button_clicked():
             self.condition_mapper.submit()
@@ -324,6 +349,9 @@ class Window(QWidget):
                     database.selected_rule = ''
                     init_rules()
                     ruleUnselected()
+                else:
+                    QMessageBox.warning(self, "Failed",
+                                        "Rule with that name already exists")
 
         add_rule_button.clicked.connect(update_rule_list)
 
@@ -334,6 +362,8 @@ class Window(QWidget):
                 update_folder_model()
                 ruleUnselected()
                 init_rules()
+            else:
+                QMessageBox.warning(self, "Failed", "Folder with same path already exists")
         add_folder_button.clicked.connect(add_folder)
 
         def remove_folder():

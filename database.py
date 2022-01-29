@@ -64,17 +64,6 @@ def sql_insert(con, values):
         return False
 
 
-def rule_insert(con, values):
-    try:
-        cursor = con.cursor()
-        cursor.execute('INSERT INTO RULE(F_ID, Rule_Name) VALUES(?, ?)', values)
-        con.commit()
-        return True
-    except Error as er:
-        print(er.args)
-        return False
-
-
 def get_folder_id():
     conn = sql_connection()
     folder_name = selected_folder
@@ -100,7 +89,8 @@ def condition_table(con):
         Actions      Text,
         Target_Path  Text,
         Rename       Text,
-        unique (Rule))
+        unique (Rule),
+        FOREIGN KEY(Rule) REFERENCES RULE(Rule_Name))
         """)
     except Error as er:
         print(er)
@@ -180,6 +170,21 @@ def remove_rule():
         cursor.execute('DELETE FROM RULE WHERE Rule_Name = ?', [selected_rule])
     except Error as er:
         print(er)
+    finally:
+        con.commit()
+
+
+def update_condition_rule(name):
+    con = sql_connection()
+    try:
+        cursor = con.cursor()
+        cursor.execute('UPDATE CONDITIONS SET Rule = ? WHERE Rule = ?', (name, selected_rule))
+        print("Old name:  {}".format(selected_rule))
+        print("New name:  {}".format(name))
+        return True
+    except Error as er:
+        print(er)
+        return False
     finally:
         con.commit()
 
