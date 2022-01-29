@@ -6,8 +6,8 @@ import decimal
 
 rule_name = ''
 condition_value = ''  # combobox_value
-operator_value = ''  # combobox1_value
-size_value = 0.0
+operator_value = ''   # combobox1_value
+size_value = ''
 ext_value = ''
 date_edit_value = ''
 unit_value = ''
@@ -88,6 +88,8 @@ def conditions_applied():
                         run_task(actions_value, a)
 
     if condition_value == 'Size':
+        global size_value
+        size_value = float(size_value)
         if operator_value == 'is':
             for subdir, dirs, files in os.walk(original_path):
                 for file in files:
