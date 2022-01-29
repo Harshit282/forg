@@ -188,9 +188,21 @@ def update_condition_rule(name):
     finally:
         con.commit()
 
-
 def init_database():
     con = sql_connection()
     folder_table(con)
     rule_table(con)
     condition_table(con)
+
+# For background helper
+def get_folders_list():
+    con = sql_connection()
+    try:
+        cursor = con.cursor()
+        cursor.execute('SELECT Folder_Path FROM FOLDER')
+        list_without_tuples = []
+        for path in cursor.fetchall():
+            list_without_tuples.append(str(path)[2:-3])
+        return list_without_tuples
+    except Error as er:
+        print(er)
