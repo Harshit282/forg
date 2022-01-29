@@ -208,9 +208,9 @@ class Window(QWidget):
         panel3_condition_vbox_layout.addLayout(panel3_condition_hbox1_layout)
         panel3_condition_vbox_layout.addWidget(panel3_label_rule2)
         panel3_condition_vbox_layout.addLayout(panel3_condition_hbox2_layout)
-        # panel3_condition_vbox_layout.setVerticalSpacing(20)     fix this..................
-        # Prevent rows from stretching to take all available space
-        # panel3_condition_vbox_layout.setRowStretch(panel3_condition_vbox_layout.rowCount(), 1)    and this too........
+        # TODO: Prevent child Hboxes also inherit this spacing
+        panel3_condition_vbox_layout.setSpacing(10)
+        panel3_condition_vbox_layout.setAlignment(Qt.AlignTop)
         self.condition_mapper.addMapping(condition, 1, b'currentText')
         self.condition_mapper.addMapping(operator, 2, b'currentText')
         self.condition_mapper.addMapping(size_value, 3)
