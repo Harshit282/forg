@@ -6,7 +6,7 @@ import decimal
 
 rule_name = ''
 condition_value = ''  # combobox_value
-operator_value = ''   # combobox1_value
+operator_value = ''  # combobox1_value
 size_value = 0.0
 ext_value = ''
 date_edit_value = ''
@@ -15,7 +15,6 @@ actions_value = ''
 original_path = r''
 target_path = r''
 rename_value = ''
-
 
 # https://stackoverflow.com/a/14996816
 suffixes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
@@ -27,6 +26,7 @@ size_base = 1000
 # to check sizes and they'd think it's our application that's wrong
 if sys.platform == 'win32':
     size_base = 1024
+
 
 def human_size(n_bytes):
     # TODO: Due to our database value being float,

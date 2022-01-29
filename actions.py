@@ -3,6 +3,7 @@ import os
 import sys
 from send2trash import send2trash
 from PyQt5.QtCore import QDir, QFileInfo
+import pathlib
 
 
 def move(op, tp):
@@ -28,15 +29,16 @@ def trash_bin(op):
 def rename(op, rename_text):
     fi = QFileInfo(op)
     directory = fi.dir().path()
+    ext = pathlib.Path(op).suffix
     # \ on Windows, / on others
     os_path_separator = QDir.separator()
-    tp = directory + os_path_separator + rename_text
-
+    tp = directory + os_path_separator + rename_text + ext
     counter = 1
     # Check whether such file already exists
     while os.path.exists(tp):
         # Add number in front if it does
         filepath, extension = os.path.splitext(tp)
+        filepath = directory + os_path_separator + rename_text
         tp = filepath + "(" + str(counter) + ")" + extension
         counter += 1
 
