@@ -38,7 +38,9 @@ class Window(QWidget):
         all_panel_hbox = QHBoxLayout()
         btm_hbox = QHBoxLayout()
         panel3_hbox = QHBoxLayout()
-        panel3_grid = QGridLayout()
+        panel3_condition_hbox1_layout = QHBoxLayout()
+        panel3_condition_hbox2_layout = QHBoxLayout()
+        panel3_condition_vbox_layout = QVBoxLayout()
         model = QStandardItemModel()
 
         add_folder_button = QPushButton()
@@ -174,13 +176,12 @@ class Window(QWidget):
         # here int values are as row, column, row_span, column_span....
         # Same for the next grid layout...
 
-        panel3_grid.addWidget(panel3_label_rule1, 0, 0, 1, 3)
-        panel3_grid.addWidget(condition, 1, 0)
-        panel3_grid.addWidget(operator, 1, 1)
-        panel3_grid.addWidget(size_value, 1, 2)
-        panel3_grid.addWidget(unit, 1, 3)
-        panel3_grid.addWidget(date_edit, 1, 2)
-        panel3_grid.addWidget(ext_value, 1, 2)
+        panel3_condition_hbox1_layout.addWidget(condition)
+        panel3_condition_hbox1_layout.addWidget(operator)
+        panel3_condition_hbox1_layout.addWidget(size_value)
+        panel3_condition_hbox1_layout.addWidget(unit)
+        panel3_condition_hbox1_layout.addWidget(date_edit)
+        panel3_condition_hbox1_layout.addWidget(ext_value)
 
         panel3_label_rule2 = QLabel('Do the following to the selected folder/files: ')
         actions = QComboBox()
@@ -200,13 +201,16 @@ class Window(QWidget):
 
         rename_value = QLineEdit()
         rename_value.setHidden(True)
-        panel3_grid.addWidget(panel3_label_rule2, 2, 0, 1, 3)
-        panel3_grid.addWidget(actions, 4, 0)
-        panel3_grid.addWidget(select_folder_btn, 4, 1)
-        panel3_grid.addWidget(rename_value, 4, 2)
-        panel3_grid.setVerticalSpacing(20)
+        panel3_condition_hbox2_layout.addWidget(actions)
+        panel3_condition_hbox2_layout.addWidget(select_folder_btn)
+        panel3_condition_hbox2_layout.addWidget(rename_value)
+        panel3_condition_vbox_layout.addWidget(panel3_label_rule1)
+        panel3_condition_vbox_layout.addLayout(panel3_condition_hbox1_layout)
+        panel3_condition_vbox_layout.addWidget(panel3_label_rule2)
+        panel3_condition_vbox_layout.addLayout(panel3_condition_hbox2_layout)
+        # panel3_condition_vbox_layout.setVerticalSpacing(20)     fix this..................
         # Prevent rows from stretching to take all available space
-        panel3_grid.setRowStretch(panel3_grid.rowCount(), 1)
+        # panel3_condition_vbox_layout.setRowStretch(panel3_condition_vbox_layout.rowCount(), 1)    and this too........
         self.condition_mapper.addMapping(condition, 1, b'currentText')
         self.condition_mapper.addMapping(operator, 2, b'currentText')
         self.condition_mapper.addMapping(size_value, 3)
@@ -230,7 +234,7 @@ class Window(QWidget):
 
         actions.currentIndexChanged.connect(on_Activated)
 
-        panel3_vbox.addLayout(panel3_grid)
+        panel3_vbox.addLayout(panel3_condition_vbox_layout)
 
         # bottom buttons...
 
