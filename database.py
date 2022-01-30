@@ -111,12 +111,12 @@ def insertCondition(value):
         return False
 
 
-def retrieve_values():
+def retrieve_values(rule):
     con = sql_connection()
     global retrieved_list
     try:
         cursor = con.cursor()
-        cursor.execute('SELECT * FROM CONDITIONS WHERE Rule = ?', [selected_rule])
+        cursor.execute('SELECT * FROM CONDITIONS WHERE Rule = ?', [rule])
         for row in cursor.fetchall():
             row = str(row)[1:-1]
             retrieved_list.clear()
@@ -214,40 +214,12 @@ def get_rules_list(f_path):
     con = sql_connection()
     try:
         cursor = con.cursor()
-        cursor.execute("""SELECT Rule_Name FROM Rule WHERE F_ID IN(SELECT ID FROM FOLDER WHERE Folder_Path = ?) 
+        cursor.execute("""SELECT Rule_Name FROM Rule WHERE F_ID IN(SELECT ID FROM FOLDER WHERE Folder_Path = ?)
         AND State = (2)""",
                        [f_path])
         list_without_tuples = []
         for path in cursor.fetchall():
             list_without_tuples.append(str(path)[2:-3])
-        return list_without_tuples
-    except Error as er:
-        print(er)
-
-
-def get_rules_info(r_name):
-    con = sql_connection()
-    try:
-        cursor = con.cursor()
-        cursor.execute('SELECT * FROM CONDITIONS WHERE Rule = ?', [r_name])
-        list_without_tuples = []
-        for row in cursor.fetchall():
-            row = str(row)[1:-1]
-            list_without_tuples.clear()
-            list_without_tuples.append(row)
-        list_without_tuples = list_without_tuples[0].split(",")
-        rule_name = list_without_tuples[0][1:-1]
-        condition_value = list_without_tuples[1][2:-1]
-        operator_value = list_without_tuples[2][2:-1]
-        size_value = list_without_tuples[3][1:]
-        ext_value = list_without_tuples[4][2:-1]
-        date_edit_value = list_without_tuples[5][2:-1]
-        unit_value = list_without_tuples[6][2:-1]
-        actions_value = list_without_tuples[7][2:-1]
-        target_path = list_without_tuples[8][2:-1]
-        rename_value = list_without_tuples[9][2:-1]
-        list_without_tuples = [rule_name, condition_value, operator_value, size_value, ext_value, date_edit_value,
-                               unit_value, actions_value, target_path, rename_value]
         return list_without_tuples
     except Error as er:
         print(er)

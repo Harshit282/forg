@@ -3,6 +3,7 @@ import actions
 import datetime
 import sys
 import decimal
+import pathlib
 
 rule_name = ''
 condition_value = ''  # combobox_value
@@ -52,69 +53,60 @@ def human_size(n_bytes):
 
     return float(result)
 
-
-def conditions_applied():
+def check_conditions(af):
     if condition_value == 'Extension':
         if operator_value == 'is':
-            for subdir, dirs, files in os.walk(original_path):
-                for file in files:
-                    a = os.path.join(subdir, file)
-                    if a.endswith(ext_value):
-                        run_task(actions_value, a)
+            if af.endswith(ext_value):
+                run_task(actions_value, af)
         elif operator_value == 'is not':
-            for subdir, dirs, files in os.walk(original_path):
-                for file in files:
-                    a = os.path.join(subdir, file)
-                    if a.endswith(ext_value):
-                        pass
-                    else:
-                        run_task(actions_value, a)
+            if af.endswith(ext_value):
+                pass
+            else:
+                run_task(actions_value, af)
 
-    if condition_value == 'Date Added':
+    elif condition_value == 'Date Added':
         dt = datetime.datetime.strptime(date_edit_value, '%Y-%m-%d')
         new_dt = int(dt.strftime('%Y%m%d'))
-        for subdir, dirs, files in os.walk(original_path):
-            for file in files:
-                a = os.path.join(subdir, file)
-                file_date = int(datetime.datetime.fromtimestamp(os.path.getctime(a)).strftime('%Y%m%d'))
-                if operator_value == 'is':
-                    if new_dt == file_date:
-                        run_task(actions_value, a)
-                if operator_value == 'is before':
-                    if new_dt > file_date:
-                        run_task(actions_value, a)
-                if operator_value == 'is after':
-                    if new_dt < file_date:
-                        run_task(actions_value, a)
+        file_date = int(datetime.datetime.fromtimestamp(os.path.getctime(af)).strftime('%Y%m%d'))
+        if operator_value == 'is':
+            if new_dt == file_date:
+                run_task(actions_value, af)
+        elif operator_value == 'is before':
+            if new_dt > file_date:
+                run_task(actions_value, af)
+        elif operator_value == 'is after':
+            if new_dt < file_date:
+                run_task(actions_value, af)
 
-    if condition_value == 'Size':
+    elif condition_value == 'Size':
         global size_value
         size_value = float(size_value)
         if operator_value == 'is':
-            for subdir, dirs, files in os.walk(original_path):
-                for file in files:
-                    a = os.path.join(subdir, file)
-                    size_of_file = human_size(os.path.getsize(a))
-                    print("Calculated size of file: {}".format(size_of_file))
-                    print("Size given in condition: {}".format(size_value))
-                    if size_of_file == size_value == 0:
-                        run_task(actions_value, a)
-                    elif size_of_file == size_value:
-                        run_task(actions_value, a)
+            size_of_file = human_size(os.path.getsize(af))
+            print("Calculated size of file: {}".format(size_of_file))
+            print("Size given in condition: {}".format(size_value))
+            if size_of_file == size_value == 0:
+                run_task(actions_value, af)
+            elif size_of_file == size_value:
+                run_task(actions_value, af)
         elif operator_value == 'greater than':
-            for subdir, dirs, files in os.walk(original_path):
-                for file in files:
-                    a = os.path.join(subdir, file)
-                    size_of_file = human_size(os.path.getsize(a))
-                    if size_of_file > size_value:
-                        run_task(actions_value, a)
+            size_of_file = human_size(os.path.getsize(af))
+            if size_of_file > size_value:
+                run_task(actions_value, af)
         elif operator_value == 'less than':
-            for subdir, dirs, files in os.walk(original_path):
-                for file in files:
-                    a = os.path.join(subdir, file)
-                    size_of_file = human_size(os.path.getsize(a))
-                    if size_of_file < size_value:
-                        run_task(actions_value, a)
+            size_of_file = human_size(os.path.getsize(af))
+            if size_of_file < size_value:
+                run_task(actions_value, af)
+
+def conditions_applied(path):
+    if pathlib.Path(path).is_file():
+        check_conditions(path)
+    elif pathlib.Path(path).is_dir():
+        for subdir, dirs, files in os.walk(original_path):
+            for file in files:
+                af = os.path.join(subdir, file)
+                check_conditions(af)
+
 
 
 def run_task(action_performed, file_to_process):  # file_to process == a

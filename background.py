@@ -30,6 +30,13 @@ class QueueEventHandler(FileSystemEventHandler):
         super(QueueEventHandler, self).on_created(event)
         if not event.is_directory:
             logging.info("New file: {}".format(event.src_path))
+            # Wait till the file is fully created
+            # https://stackoverflow.com/a/41105283
+            historicalSize = -1
+            while (historicalSize != os.path.getsize(event.src_path)):
+              historicalSize = os.path.getsize(event.src_path)
+              time.sleep(1)
+            logging.info("File Creation Finished at {}".format(event.src_path))
             file_queue.put_nowait(event.src_path)
             logging.info("Put {} into file queue".format(event.src_path))
             queue_mgr.process_file_queue()
@@ -70,52 +77,11 @@ class QueueManager(object):
                 file = file_queue.get()
                 self.logger.info("Processing file {}".format(file))
                 file_info = QFileInfo(file)
-                directory_of_file = file_info.dir().path()
-                # CHECK IF YOUR FILE IS PART OF THE FOLDERS WHICH FORG IS WORKING ON OR NOT.
-                for ppaatthh in pathnames:
-                    if str(ppaatthh) in str(directory_of_file):
-                        list_of_rules = database.get_rules_list(ppaatthh)
-                        for rule in list_of_rules:
-                            conditions_of_rule = database.get_rules_info(rule)
-                            if conditions_of_rule[1] == 'Size':
-                                conditions_of_rule[3] = float(conditions_of_rule[3])
-                                if conditions_of_rule[2] == 'is':
-                                    size_of_file = conditions.human_size(os.path.getsize(file))
-                                    if size_of_file == conditions_of_rule[3] == 0:
-                                        conditions.run_task(conditions_of_rule[7], file)
-                                    elif size_of_file == conditions_of_rule[3]:
-                                        conditions.run_task(conditions_of_rule[7], file)
-                                elif conditions_of_rule[2] == 'greater than':
-                                    size_of_file = conditions.human_size(os.path.getsize(file))
-                                    if size_of_file > conditions_of_rule[3]:
-                                        conditions.run_task(conditions_of_rule[7], file)
-                                elif conditions_of_rule[2] == 'less than':
-                                    size_of_file = conditions.human_size(os.path.getsize(file))
-                                    if size_of_file < conditions_of_rule[3]:
-                                        conditions.run_task(conditions_of_rule[7], file)
-                            elif conditions_of_rule[1] == 'Extension':
-                                if conditions_of_rule[2] == 'is':
-                                    if file.endswith(conditions_of_rule[4]):
-                                        conditions.run_task(conditions_of_rule[7], file)
-                                elif conditions_of_rule[2] == 'is not':
-                                    if file.endswith(conditions_of_rule[4]):
-                                        pass
-                                    else:
-                                        conditions.run_task(conditions_of_rule[7], file)
-                            elif conditions_of_rule[1] == 'Date Added':
-                                dt = datetime.datetime.strptime(conditions_of_rule[5], '%Y-%m-%d')
-                                new_dt = int(dt.strftime('%Y%m%d'))
-                                file_date = int(
-                                    datetime.datetime.fromtimestamp(os.path.getctime(file)).strftime('%Y%m%d'))
-                                if conditions_of_rule[2] == 'is':
-                                    if new_dt == file_date:
-                                        conditions.run_task(conditions_of_rule[7], file)
-                                if conditions_of_rule[2] == 'is before':
-                                    if new_dt > file_date:
-                                        conditions.run_task(conditions_of_rule[7], file)
-                                if conditions_of_rule[2] == 'is after':
-                                    if new_dt < file_date:
-                                        conditions.run_task(conditions_of_rule[7], file)
+                dir = file_info.dir().path()
+                list_of_active_rules = database.get_rules_list(dir)
+                for rule in list_of_active_rules:
+                    database.retrieve_values(rule)
+                    conditions.conditions_applied(file)
 
                 #### INSERT CODE HERE TO DO WORK ####
 

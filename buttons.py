@@ -25,8 +25,8 @@ def add_folder_clicked():
 
 
 def resume_pause_clicked():
-    database.retrieve_values()
-    conditions.conditions_applied()
+    database.retrieve_values(database.selected_rule)
+    conditions.conditions_applied(conditions.original_path)
 
 
 def save_button_clicked():
