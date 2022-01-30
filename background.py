@@ -8,6 +8,7 @@ import database
 import actions
 import datetime
 import conditions
+import sys
 from threading import Thread
 from queue import Queue
 from watchdog.observers import Observer
@@ -17,6 +18,7 @@ from PyQt5.QtCore import QDir, QFileInfo
 
 file_queue = Queue()
 pathnames = database.get_folders_list()
+
 
 class QueueEventHandler(FileSystemEventHandler):
     '''Watches a specific folder and raises events on_created and on_deleted'''
@@ -30,12 +32,31 @@ class QueueEventHandler(FileSystemEventHandler):
         super(QueueEventHandler, self).on_created(event)
         if not event.is_directory:
             logging.info("New file: {}".format(event.src_path))
+            # Windows allocates full size at the start
+            # But doesn't let access to file until creation is completed
+            # and throws OSError
+            # So add a ugly way to confirm creation by
+            # repeatedly trying to rename file
+            # https://stackoverflow.com/a/53153102
+            if sys.platform == 'win32':
+                path = event.src_path
+                while True:
+                    try:
+                        new_path = path + "_"
+                        os.rename(path, new_path)
+                        os.rename(new_path, path)
+                        time.sleep(0.05)
+                        break
+                    except OSError:
+                        time.sleep(1)
+            # Use polling for other OS
             # Wait till the file is fully created
             # https://stackoverflow.com/a/41105283
-            historicalSize = -1
-            while (historicalSize != os.path.getsize(event.src_path)):
-              historicalSize = os.path.getsize(event.src_path)
-              time.sleep(1)
+            else:
+                historicalSize = -1
+                while (historicalSize != os.path.getsize(event.src_path)):
+                    historicalSize = os.path.getsize(event.src_path)
+                    time.sleep(1)
             logging.info("File Creation Finished at {}".format(event.src_path))
             file_queue.put_nowait(event.src_path)
             logging.info("Put {} into file queue".format(event.src_path))
@@ -81,6 +102,7 @@ class QueueManager(object):
                 list_of_active_rules = database.get_rules_list(dir)
                 for rule in list_of_active_rules:
                     database.retrieve_values(rule)
+                    print("Active rule: {}".format(rule))
                     conditions.conditions_applied(file)
 
                 #### INSERT CODE HERE TO DO WORK ####
