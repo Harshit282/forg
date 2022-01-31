@@ -8,6 +8,7 @@ import actions
 import conditions
 import database
 import models
+import delegates
 
 
 class Window(QWidget):
@@ -25,6 +26,7 @@ class Window(QWidget):
         self.condition_mapper = QDataWidgetMapper(self)
         self.condition_mapper.setSubmitPolicy(QDataWidgetMapper.ManualSubmit)
         self.condition_mapper.setModel(self.condition_model)
+        self.condition_mapper.setItemDelegate(delegates.ConditionItemDelegate(self))
         main_window_vbox = QVBoxLayout()
         icon1_hbox = QHBoxLayout()
         icon2_hbox = QHBoxLayout()
@@ -190,11 +192,14 @@ class Window(QWidget):
         actions.addItem('Delete')
         actions.addItem('Trash Bin')
         actions.addItem('Rename')
-        select_folder_btn = QPushButton("Select Folder")
+        select_folder_btn = QPushButton()
 
         def select_folder_clicked():
             selected_path = QFileDialog.getExistingDirectory()
-            select_folder_btn.setText(selected_path)
+            select_folder_btn.setToolTip(selected_path)
+            if selected_path:
+                select_folder_btn.setText("To {}"
+                    .format(QDir(selected_path).dirName()))
 
         select_folder_btn.clicked.connect(select_folder_clicked)
 
@@ -218,7 +223,7 @@ class Window(QWidget):
         self.condition_mapper.addMapping(date_edit, 5, b'date')
         self.condition_mapper.addMapping(unit, 6, b'currentText')
         self.condition_mapper.addMapping(actions, 7, b'currentText')
-        self.condition_mapper.addMapping(select_folder_btn, 8, b'text')
+        self.condition_mapper.addMapping(select_folder_btn, 8)
         self.condition_mapper.addMapping(rename_value, 9)
 
         def on_Activated():
