@@ -5,7 +5,6 @@ from PyQt5.QtCore import QDir
 class ConditionItemDelegate(QStyledItemDelegate):
     def setEditorData(self, editor, index):
         # Target_Path - QPushButton
-        print("Column : {}".format(index.column()))
         if index.column() == 8:
             value = index.data()
             if value:

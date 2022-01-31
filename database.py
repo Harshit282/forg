@@ -132,9 +132,6 @@ def retrieve_values():
         conditions.actions_value = retrieved_list[7][2:-1]
         conditions.target_path = retrieved_list[8][2:-1]
         conditions.rename_value = retrieved_list[9][2:-1]
-        # print(conditions.rule_name, conditions.condition_value, conditions.operator_value, conditions.size_value,
-        #       conditions.ext_value, conditions.date_edit_value, conditions.unit_value, conditions.actions_value,
-        #       conditions.target_path, conditions.rename_value)
     except Error as er:
         print(er)
     finally:
@@ -151,10 +148,8 @@ def remove_folder():
             cursor.execute('DELETE FROM RULE WHERE F_ID IN (SELECT ID FROM FOLDER WHERE Folder_Name = ?)',
                            [selected_folder])
             cursor.execute('DELETE FROM FOLDER WHERE Folder_Name = ?', [selected_folder])
-            print("folder deletion successful")
             return True
         else:
-            print("no folder selected for deletion")
             return False
     except Error as er:
         print(er)
@@ -179,8 +174,6 @@ def update_condition_rule(name):
     try:
         cursor = con.cursor()
         cursor.execute('UPDATE CONDITIONS SET Rule = ? WHERE Rule = ?', (name, selected_rule))
-        print("Old name:  {}".format(selected_rule))
-        print("New name:  {}".format(name))
         return True
     except Error as er:
         print(er)
