@@ -184,6 +184,7 @@ class Window(QWidget):
         panel3_condition_hbox1_layout.addWidget(unit)
         panel3_condition_hbox1_layout.addWidget(date_edit)
         panel3_condition_hbox1_layout.addWidget(ext_value)
+        panel3_condition_hbox1_layout.addStretch()
 
         panel3_label_rule2 = QLabel('Do the following to the selected folder/files: ')
         actions = QComboBox()
@@ -209,12 +210,14 @@ class Window(QWidget):
         panel3_condition_hbox2_layout.addWidget(actions)
         panel3_condition_hbox2_layout.addWidget(select_folder_btn)
         panel3_condition_hbox2_layout.addWidget(rename_value)
+        panel3_condition_hbox2_layout.addStretch()
+        panel3_condition_vbox_layout.addSpacing(20)
         panel3_condition_vbox_layout.addWidget(panel3_label_rule1)
         panel3_condition_vbox_layout.addLayout(panel3_condition_hbox1_layout)
+        panel3_condition_vbox_layout.addSpacing(20)
         panel3_condition_vbox_layout.addWidget(panel3_label_rule2)
         panel3_condition_vbox_layout.addLayout(panel3_condition_hbox2_layout)
         # TODO: Prevent child Hboxes also inherit this spacing
-        panel3_condition_vbox_layout.setSpacing(10)
         panel3_condition_vbox_layout.setAlignment(Qt.AlignTop)
         self.condition_mapper.addMapping(condition, 1, b'currentText')
         self.condition_mapper.addMapping(operator, 2, b'currentText')
