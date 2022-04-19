@@ -374,6 +374,9 @@ class Window(QWidget):
                 update_folder_model()
                 ruleUnselected()
                 init_rules()
+            # Folder dialog was closed without selecting folder
+            elif (added is None):
+                pass
             else:
                 QMessageBox.warning(self, "Failed", "Folder with same path already exists")
         add_folder_button.clicked.connect(add_folder)
