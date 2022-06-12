@@ -15,6 +15,7 @@ actions_value = ''
 original_path = r''
 target_path = r''
 rename_value = ''
+files = []
 
 # https://stackoverflow.com/a/14996816
 suffixes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
@@ -53,14 +54,14 @@ def human_size(n_bytes):
     return float(result)
 
 
-def conditions_applied():
+def conditions_applied(dry_run=False):
     if condition_value == 'Extension':
         if operator_value == 'is':
             for subdir, dirs, files in os.walk(original_path):
                 for file in files:
                     a = os.path.join(subdir, file)
                     if a.endswith(ext_value):
-                        run_task(actions_value, a)
+                        run_task(actions_value, a, dry_run)
         elif operator_value == 'is not':
             for subdir, dirs, files in os.walk(original_path):
                 for file in files:
@@ -68,7 +69,7 @@ def conditions_applied():
                     if a.endswith(ext_value):
                         pass
                     else:
-                        run_task(actions_value, a)
+                        run_task(actions_value, a, dry_run)
 
     if condition_value == 'Date Added':
         dt = datetime.datetime.strptime(date_edit_value, '%Y-%m-%d')
@@ -79,13 +80,13 @@ def conditions_applied():
                 file_date = int(datetime.datetime.fromtimestamp(os.path.getctime(a)).strftime('%Y%m%d'))
                 if operator_value == 'is':
                     if new_dt == file_date:
-                        run_task(actions_value, a)
+                        run_task(actions_value, a, dry_run)
                 if operator_value == 'is before':
                     if new_dt > file_date:
-                        run_task(actions_value, a)
+                        run_task(actions_value, a, dry_run)
                 if operator_value == 'is after':
                     if new_dt < file_date:
-                        run_task(actions_value, a)
+                        run_task(actions_value, a, dry_run)
 
     if condition_value == 'Size':
         global size_value
@@ -98,34 +99,37 @@ def conditions_applied():
                     print("Calculated size of file: {}".format(size_of_file))
                     print("Size given in condition: {}".format(size_value))
                     if size_of_file == size_value == 0:
-                        run_task(actions_value, a)
+                        run_task(actions_value, a, dry_run)
                     elif size_of_file == size_value:
-                        run_task(actions_value, a)
+                        run_task(actions_value, a, dry_run)
         elif operator_value == 'greater than':
             for subdir, dirs, files in os.walk(original_path):
                 for file in files:
                     a = os.path.join(subdir, file)
                     size_of_file = human_size(os.path.getsize(a))
                     if size_of_file > size_value:
-                        run_task(actions_value, a)
+                        run_task(actions_value, a, dry_run)
         elif operator_value == 'less than':
             for subdir, dirs, files in os.walk(original_path):
                 for file in files:
                     a = os.path.join(subdir, file)
                     size_of_file = human_size(os.path.getsize(a))
                     if size_of_file < size_value:
-                        run_task(actions_value, a)
+                        run_task(actions_value, a, dry_run)
 
 
-def run_task(action_performed, file_to_process):  # file_to process == a
-    global target_path
-    if action_performed == 'Copy':
-        actions.copy(file_to_process, target_path)
-    elif action_performed == 'Move':
-        actions.move(file_to_process, target_path)
-    elif action_performed == 'Delete':
-        actions.delete(file_to_process)
-    elif action_performed == 'Trash Bin':
-        actions.trash_bin(file_to_process)
-    elif action_performed == 'Rename':
-        actions.rename(file_to_process, rename_value)
+def run_task(action_performed, file_to_process, dry_run=False):  # file_to process == a
+    if not dry_run:
+        global target_path
+        if action_performed == 'Copy':
+            actions.copy(file_to_process, target_path)
+        elif action_performed == 'Move':
+            actions.move(file_to_process, target_path)
+        elif action_performed == 'Delete':
+            actions.delete(file_to_process)
+        elif action_performed == 'Trash Bin':
+            actions.trash_bin(file_to_process)
+        elif action_performed == 'Rename':
+            actions.rename(file_to_process, rename_value)
+    else:
+        files.append(file_to_process)

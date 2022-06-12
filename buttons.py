@@ -24,9 +24,9 @@ def add_folder_clicked():
             print("F Records not Inserted")
 
 
-def resume_pause_clicked():
+def resume_pause_clicked(dry_run):
     database.retrieve_values()
-    conditions.conditions_applied()
+    conditions.conditions_applied(dry_run)
 
 
 def save_button_clicked():

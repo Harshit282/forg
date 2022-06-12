@@ -9,6 +9,7 @@ import conditions
 import database
 import models
 import delegates
+import preview
 
 
 class Window(QWidget):
@@ -47,6 +48,9 @@ class Window(QWidget):
 
         add_folder_button = QPushButton()
         add_rule_button = QPushButton()
+        preview_button = QPushButton()
+        preview_button.setIcon(QIcon('icons/preview.png'))
+        preview_button.setToolTip("Preview rule")
         btn3 = QPushButton()
         add_folder_button.setIcon(QIcon('icons/add folder.png'))
         add_folder_button.setToolTip('Add Folder')
@@ -96,6 +100,7 @@ class Window(QWidget):
         # Panel 3 starts from here...
 
         icon3_hbox.addStretch()
+        icon3_hbox.addWidget(preview_button)
         icon3_hbox.addWidget(btn3)
         panel3_vbox.addLayout(icon3_hbox)
 
@@ -394,6 +399,17 @@ class Window(QWidget):
             self.condition_model.select()
             self.condition_mapper.toFirst()
 
+        def show_preview():
+            buttons.resume_pause_clicked(True)
+            msg = "List of files that satisfy the condition"
+            dial = preview.PreviewDialog("Preview Rule", msg, conditions.files)
+            # It will show dialog and pause the code execution until dialog is closed
+            # using dial.open() is recommended in documention but it doesn't work for me.
+            dial.exec_()
+            conditions.files.clear()
+
+        preview_button.clicked.connect(show_preview)
+
         rule_listview.selectionModel().currentChanged.connect(change_rule)
 
         remove_rule_btn.clicked.connect(buttons.remove_rule_button_clicked)
@@ -414,6 +430,7 @@ class Window(QWidget):
         all_panel_hbox.setStretchFactor(panel2_vbox, 1)
         all_panel_hbox.setStretchFactor(frame, 3)
         all_panel_hbox.setStretchFactor(no_rule_label, 3)
+        # main_window_vbox.addWidget(file_list)
         main_window_vbox.addLayout(all_panel_hbox)
 
         self.setLayout(main_window_vbox)
