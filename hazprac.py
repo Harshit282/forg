@@ -10,6 +10,7 @@ import database
 import models
 import delegates
 import preview
+import emptylabels
 
 
 class Window(QWidget):
@@ -33,10 +34,12 @@ class Window(QWidget):
         icon2_hbox = QHBoxLayout()
         icon3_hbox = QHBoxLayout()
         panel1_vbox = QVBoxLayout()
-        panel2_vbox = QVBoxLayout()
+        folder_widget = QWidget()
+        panel2_vbox = QVBoxLayout(folder_widget)
         panel3_vbox = QVBoxLayout()
-        no_rule_label = QLabel("No rule selected")
-        no_rule_label.setAlignment(Qt.AlignCenter)
+
+        no_rule_label = emptylabels.EmptyLabel("No Rule Selected", "icons/norule.png")
+        no_folder_label = emptylabels.EmptyLabel("No Folder Selected", "icons/nofolder.png")
         frame = QFrame()
         all_panel_hbox = QHBoxLayout()
         btm_hbox = QHBoxLayout()
@@ -314,6 +317,9 @@ class Window(QWidget):
         remove_folder_btn.clicked.connect(update_folder_model)
 
         def folder_selected(index):
+            folder_widget.show()
+            no_folder_label.hide()
+            no_rule_label.show()
             # Folder_Path is 3rd column
             path = index.sibling(index.row(), 2).data()
             conditions.original_path = path
@@ -334,6 +340,9 @@ class Window(QWidget):
             no_rule_label.show()
 
         def folder_unselected():
+            folder_widget.hide()
+            no_rule_label.hide()
+            no_folder_label.show()
             remove_folder_btn.setEnabled(False)
             remove_folder_btn.setToolTip("Select a folder first")
             add_rule_button.setEnabled(False)
@@ -375,9 +384,9 @@ class Window(QWidget):
         def add_folder():
             added = buttons.add_folder_clicked()
             if added:
+                ruleUnselected()
                 folder_unselected()
                 update_folder_model()
-                ruleUnselected()
                 init_rules()
             # Folder dialog was closed without selecting folder
             elif (added is None):
@@ -389,9 +398,9 @@ class Window(QWidget):
         def remove_folder():
             removed = buttons.remove_folder_button_clicked()
             if removed:
+                ruleUnselected()
                 folder_unselected()
                 update_folder_model()
-                ruleUnselected()
                 init_rules()
 
         def change_rule():
@@ -420,16 +429,18 @@ class Window(QWidget):
         # Packing layouts into the main window which is in vertical layout...
 
         all_panel_hbox.addLayout(panel1_vbox)
-        all_panel_hbox.addLayout(panel2_vbox)
-        all_panel_hbox.addWidget(no_rule_label)
+        all_panel_hbox.addWidget(folder_widget)
+        all_panel_hbox.addWidget(no_rule_label, Qt.AlignCenter)
+        all_panel_hbox.addWidget(no_folder_label, Qt.AlignCenter)
         all_panel_hbox.addWidget(frame)
         frame.hide()
         # Stretch factor of 1,1,3 leads to 20%, 20%, 60% used space
         # for panel 1,2,3 respectively
         all_panel_hbox.setStretchFactor(panel1_vbox, 1)
-        all_panel_hbox.setStretchFactor(panel2_vbox, 1)
+        all_panel_hbox.setStretchFactor(folder_widget, 1)
         all_panel_hbox.setStretchFactor(frame, 3)
         all_panel_hbox.setStretchFactor(no_rule_label, 3)
+        all_panel_hbox.setStretchFactor(no_folder_label, 3)
         # main_window_vbox.addWidget(file_list)
         main_window_vbox.addLayout(all_panel_hbox)
 
