@@ -1,5 +1,6 @@
 from PyQt5.QtCore import *
 from PyQt5.QtSql import *
+from PyQt5.QtGui import QIcon
 
 
 class RuleTableModel(QSqlTableModel):
@@ -33,3 +34,12 @@ class RuleTableModel(QSqlTableModel):
                 self.dataChanged.emit(index, index)
             return ret
         return QSqlTableModel.setData(self, index, value, role)
+
+
+class FolderTable(QSqlTableModel):
+
+    def data(self, index, role):
+        if role == Qt.DecorationRole:
+            return QIcon("icons/folder.svg")
+        else:
+            return QSqlTableModel.data(self, index, role)
