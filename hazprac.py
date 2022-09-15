@@ -36,6 +36,7 @@ class Window(QWidget):
         panel1_vbox = QVBoxLayout()
         folder_widget = QWidget()
         panel2_vbox = QVBoxLayout(folder_widget)
+        panel2_vbox.setContentsMargins(0,0,0,0)
         panel3_vbox = QVBoxLayout()
 
         no_rule_label = emptylabels.EmptyLabel("No Rule Selected", "icons/norule.png")
